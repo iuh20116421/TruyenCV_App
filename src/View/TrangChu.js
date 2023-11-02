@@ -1,4 +1,5 @@
 import { StatusBar } from "expo-status-bar";
+import { useNavigation } from '@react-navigation/native';
 import {
   StyleSheet,
   Text,
@@ -10,6 +11,7 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { DSTRuyen } from "../data/truyen.js";
+
 const dataTruyen = DSTRuyen;
 
 function DanhMuc() {
@@ -48,28 +50,38 @@ function ePub() {
   );
 }
 function CapNhat() {
+  const navigation = useNavigation();
+
+  const renderItem = ({ item }) => {
+    const handlePress = () => {
+      navigation.navigate('TomTat', { truyen: item });
+    };
+
+    return (
+      <View style={styles.ViewFlatlis}>
+        <TouchableOpacity style={styles.dstruyen} onPress={handlePress}>
+          <View style={styles.ImageTruyen}>
+            <Image source={item.image} style={styles.ImageTruyen} />
+          </View>
+          <View style={styles.ViewChu}>
+            <Text style={styles.TexTTen}>{item.ten}</Text>
+            <Text style={styles.Textduoi}>
+              {item.tacGia}
+              {"\n"}
+              {item.soChuong} chương -{" "}
+              {item.trangThai == "Truyện FULL" ? "Đã full" : "Đang ra"}
+              {"\n"}
+              {item.ngayCapNhat}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
-      <FlatList
-        data={dataTruyen}
-        renderItem={({ item }) => {
-          return (
-            <View style={styles.ViewFlatlis}>
-              <TouchableOpacity style={styles.dstruyen}>
-                <View style={styles.ImageTruyen}>
-                  <Image source={item.image} style={styles.ImageTruyen} />
-                </View>
-                <View style={styles.ViewChu}>
-                  <Text style={styles.TexTTen}>{item.ten}</Text>
-                  
-                  <Text style={styles.Textduoi}>{item.tacGia}{'\n'}{item.soChuong} chương - {item.trangThai=='Truyện FULL'?'Đã full':'Đang ra'}{'\n'}{item.ngayCapNhat}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          );
-        }}
-      />
+      <FlatList data={dataTruyen} renderItem={renderItem} />
     </View>
   );
 }
