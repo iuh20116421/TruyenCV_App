@@ -5,11 +5,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import{Ionicons} from '@expo/vector-icons'
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import TrangChu from './src/TrangChu.js'
-import TimKiem from './src/TimKiem.js'
-import ThuVien from './src/ThuVien.js'
-import CongDong from './src/CongDong.js'
-import CaiDat from './src/CaiDat.js'
+import TrangChu from './src/View/TrangChu.js'
+import TimKiem from './src/View/TimKiem.js'
+import ThuVien from './src/View/ThuVien.js'
+import CongDong from './src/View/CongDong.js'
+import CaiDat from './src/View/CaiDat.js'
 export default function App() {
   const stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
