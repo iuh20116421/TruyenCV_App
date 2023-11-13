@@ -8,57 +8,72 @@ import {
   TouchableOpacity,
 } from "react-native";
 import * as React from "react";
-import { MaterialIcons } from "@expo/vector-icons";
 import FlashMessage, { showMessage } from "react-native-flash-message";
-export default function Screen01({ navigation, route }) {
+import { MaterialIcons } from "@expo/vector-icons";
+
+export default function Screen01({ navigation }) {
   const [tk, setTK] = React.useState("");
   const [mk, setmk] = React.useState("");
-  const [dataAccount, setdataAccount] = React.useState([]);
-  function login(tk, mk) {
-        fetch("https://f56tg4-8080.csb.app/accounts")
-          .then((response) => response.json())
-          .then((data) => {
-            setdataAccount(data);
-            if (data.find(
-                (item) => item.email === tk && item.password === mk
-              )) {
-                navigation.navigate("AppChinh", { account: dataAccount });
-              } else {
-                showMessage({
-                  message: "Tài khoản hoặc mật khẩu không chính xác!!!",
-                  type: "info",
-                  duration: 3000, // Thời gian tồn tại của thông báo, tính bằng millisecond
-                });
-              }
-          })
-          .catch((error) => {
-            // Xử lý lỗi nếu có
-            console.error("Có lỗi xảy ra: ", error);
-          });
-  }
+  const [name, setName] = React.useState("");
+  const registerAccount = () => {
+    fetch("https://f56tg4-8080.csb.app/accounts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: tk, password: mk, name: name }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Xử lý phản hồi từ API
+        navigation.navigate("Login");
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra: ", error);
+      });
+  };
   return (
     <View style={styles.container}>
       <FlashMessage position="top" />
-      <Text
-        style={{
-          fontSize: 29,
-          fontWeight: "bold",
-          marginTop: 20,
-          color: "black",
-        }}
-      >
-        Well Come to !
-      </Text>
-      <Text style={{ fontSize: 17, marginTop: 10, color: "black" }}>
-        Truyện CV application.
+      <Text style={{ fontSize: 24, fontWeight: "bold", marginTop: 20 }}>
+        Đăng ký tài khoản Truyện CV !
       </Text>
       <Image
         source={require("../../assets/imgTruyen/Logo.png")}
-        style={{ marginTop: 20, width: "170px", height: "170px" }}
+        style={{
+          marginTop: 20,
+          width: "170px",
+          height: "170px",
+          marginBottom: 20,
+        }}
       />
       <TouchableOpacity
         style={{
-          margin: 20,
+          borderWidth: 1,
+          borderRadius: "10px",
+          width: "90%",
+          height: "45px",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "row",
+          borderColor: "black",
+        }}
+      >
+        <TextInput
+          onChangeText={(text) => setName(text)}
+          style={{
+            width: "100%",
+            height: "45px",
+            borderRadius: "10px",
+            borderColor: "black",
+            color: "black",
+          }}
+          placeholder="Enter your name"
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          margin: 10,
           borderWidth: 1,
           borderRadius: "10px",
           width: "90%",
@@ -108,17 +123,18 @@ export default function Screen01({ navigation, route }) {
           <MaterialIcons name="remove-red-eye" size={22} color="black" />
         </TouchableOpacity>
       </TouchableOpacity>
-      <View
-        style={{ marginVertical: "20px", width: "90%", alignItems: "flex-end" }}
-      >
-        <TouchableOpacity>
-          <Text style={{ color: "blue" }}>Forgot password?</Text>
-        </TouchableOpacity>
-      </View>
+
       <TouchableOpacity
         onPress={() => {
-          login(tk, mk);
-          
+          if (tk && mk && name) {
+            registerAccount();
+          } else {
+            showMessage({
+              message: "Thông báo",
+              description: "Vui lòng nhập đầy đủ thông tin",
+              type: "danger",
+            });
+          }
         }}
         style={{
           backgroundColor: "blue",
@@ -127,27 +143,12 @@ export default function Screen01({ navigation, route }) {
           height: "40px",
           justifyContent: "center",
           alignItems: "center",
-        }}
-      >
-        <Text style={{ color: "black", fontSize: "20px" }}>Continue</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("DangKy");
-        }}
-        style={{
-          backgroundColor: "red",
-          borderRadius: "10px",
-          width: "30%",
-          height: "40px",
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: 20,
-          marginLeft: 230,
+          marginTop: 30,
         }}
       >
         <Text style={{ color: "black", fontSize: "20px" }}>Register</Text>
       </TouchableOpacity>
+
       <View
         style={{
           flexDirection: "row",
@@ -223,6 +224,7 @@ export default function Screen01({ navigation, route }) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

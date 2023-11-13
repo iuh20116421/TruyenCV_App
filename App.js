@@ -12,6 +12,7 @@ import CongDong from "./src/View/CongDong.js";
 import CaiDat from "./src/View/CaiDat.js";
 import TomTat from "./src/View/TomTatTruyen.js";
 import Login from "./src/View/Login.js";
+import DangKy from "./src/View/DangKy.js";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -21,6 +22,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="DangKy" component={DangKy} />
         <Stack.Screen name="AppChinh" component={AppChinh} />
         <Stack.Screen name="TomTat" component={TomTat} />
       </Stack.Navigator>
