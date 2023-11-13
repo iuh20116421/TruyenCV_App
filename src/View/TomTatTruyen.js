@@ -9,10 +9,21 @@ import {
   ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import FlashMessage, { showMessage } from 'react-native-flash-message';
+
+import { useState } from "react";
 
 export default function App({ route, navigation }) {
   const { truyen } = route.params;
-  console.log(truyen);
+  const [danhGia,setDanhGia] = useState(0)
+  const handleDanhGia = () => {
+    showMessage({
+      message: 'Đã gửi đánh giá!',
+      type: 'info',
+      duration: 3000, // Thời gian tồn tại của thông báo, tính bằng millisecond
+    });
+    setDanhGia(0)
+  };
   return (
     <View style={styles.container}>
       <View style={styles.ViewTop}>
@@ -69,12 +80,59 @@ export default function App({ route, navigation }) {
               </Text>
             </View>
             <Text style={{ color: "white", fontSize: 18 }}>
-              Số chương: {truyen.soChuong}{"\n"}Ngày đăng:  {truyen.ngayDang}{"\n"}Ngày cập nhật: {truyen.ngayCapNhat}{"\n"}Lượt đọc: {truyen.luotDoc}{"\n"}Nguồn: {truyen.nguon}
+              Số chương: {truyen.soChuong}
+              {"\n"}Ngày đăng: {truyen.ngayDang}
+              {"\n"}Ngày cập nhật: {truyen.ngayCapNhat}
+              {"\n"}Lượt đọc: {truyen.luotDoc}
+              {"\n"}Nguồn: {truyen.nguon}
             </Text>
           </View>
+          <Text style={{color:'white', fontSize:14}}>
+            Nhấn vào ngôi sao để chọn số lượng sao đánh giá
+          </Text>
+          <View style={styles.ViewDanhGia}>
+            
+            <TouchableOpacity
+            onPress={()=>{
+              setDanhGia(1)
+            }} style={styles.Sao}>
+            <Ionicons name="ios-star-outline" size={24} color ={ danhGia>=1?"#00ffff": "white"}/>
+            </TouchableOpacity>
+            <TouchableOpacity
+            onPress={()=>{
+              setDanhGia(2)
+            }} style={styles.Sao}>
+            <Ionicons name="ios-star-outline" size={24} color={ danhGia>=2?"#00ffff": "white"} />
+            </TouchableOpacity>
+            <TouchableOpacity
+            onPress={()=>{
+              setDanhGia(3)
+            }} style={styles.Sao}>
+            <Ionicons name="ios-star-outline" size={24} color={ danhGia>=3?"#00ffff": "white"} />
+            </TouchableOpacity>
+            <TouchableOpacity
+            onPress={()=>{
+              setDanhGia(4)
+            }} style={styles.Sao}>
+            <Ionicons name="ios-star-outline" size={24} color={ danhGia>=4?"#00ffff": "white"} />
+            </TouchableOpacity>
+            <TouchableOpacity
+            onPress={()=>{
+              setDanhGia(5)
+            }} style={styles.Sao}>
+            <Ionicons name="ios-star-outline" size={24} color={ danhGia>=5?"#00ffff": "white"} />
+            </TouchableOpacity>
+            <TouchableOpacity
+            onPress={handleDanhGia} style={styles.GuiDanhGia}>
+              <Text style={{color:'white'}}>
+                Gửi đánh giá
+              </Text>
+            </TouchableOpacity>
+          </View>
+          
         </ScrollView>
       </View>
-
+      <FlashMessage autoHide position="top" /> 
       <View style={styles.ViewBottom}>
         <TouchableOpacity
           onPress={() => {
@@ -127,6 +185,26 @@ const styles = StyleSheet.create({
     width: "90%",
     height: 230,
     padding: 10,
+  },
+  ViewDanhGia:{
+    flexDirection:'row',
+    backgroundColor: "#222222",
+    width: "90%",
+    height: 60,
+    padding: 10,
+    justifyContent:'space-around',
+    alignItems:'center'
+  },
+  Sao:{
+    padding:5,
+  },
+  GuiDanhGia:{
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius:30,
+    backgroundColor:'#FFC125',
+    width:115,
+    height:45
   },
   ViewBottom: {
     flexDirection: "row",
