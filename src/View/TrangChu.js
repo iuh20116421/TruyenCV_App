@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from '@react-navigation/native';
+import { useEffect,useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,10 +11,6 @@ import {
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { DSTRuyen } from "../data/truyen.js";
-
-const dataTruyen = DSTRuyen;
-
 function DanhMuc() {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -50,18 +47,31 @@ function ePub() {
   );
 }
 function CapNhat() {
+  const [dsTruyen, setdsTruyen] = useState([]);
+  useEffect(() => {
+    fetch(`https://f56tg4-8080.csb.app/DsTruyen`)
+      .then((response) => response.json())
+      .then((data) => {
+        setdsTruyen(data);
+      })
+      .catch((error) => {
+        // Xử lý lỗi nếu có
+        console.error("Có lỗi xảy ra: ", error);
+      });
+  }, []);
+
   const navigation = useNavigation();
 
   const renderItem = ({ item }) => {
     const handlePress = () => {
-      navigation.navigate('TomTat', { truyen: item });
+      navigation.navigate('TomTat', { idTruyenTT: item.id });
     };
 
     return (
       <View style={styles.ViewFlatlis}>
         <TouchableOpacity style={styles.dstruyen} onPress={handlePress}>
           <View style={styles.ImageTruyen}>
-            <Image source={item.image} style={styles.ImageTruyen} />
+            <Image source={{uri: item.image}} style={styles.ImageTruyen} />
           </View>
           <View style={styles.ViewChu}>
             <Text style={styles.TexTTen}>{item.ten}</Text>
@@ -69,7 +79,7 @@ function CapNhat() {
               {item.tacGia}
               {"\n"}
               {item.soChuong} chương -{" "}
-              {item.trangThai == "Truyện FULL" ? "Đã full" : "Đang ra"}
+              {item.trangThai}
               {"\n"}
               {item.ngayCapNhat}
             </Text>
@@ -78,10 +88,9 @@ function CapNhat() {
       </View>
     );
   };
-
   return (
     <View style={styles.container}>
-      <FlatList data={dataTruyen} renderItem={renderItem} />
+      <FlatList data={dsTruyen} renderItem={renderItem} />
     </View>
   );
 }
@@ -89,7 +98,7 @@ const Tab = createMaterialTopTabNavigator();
 
 export default function App() {
   return (
-    <Tab.Navigator
+      <Tab.Navigator
       tabBarOptions={{
         scrollEnabled: true,
         activeTintColor: "#FFCC33",
@@ -108,6 +117,7 @@ export default function App() {
       <Tab.Screen name="Của bạn" component={CuaBan} />
       <Tab.Screen name="ePub" component={ePub} />
     </Tab.Navigator>
+   
   );
 }
 const styles = StyleSheet.create({

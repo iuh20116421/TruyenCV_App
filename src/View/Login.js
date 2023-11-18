@@ -14,7 +14,7 @@ export default function Screen01({ navigation, route }) {
   const [tk, setTK] = React.useState("");
   const [mk, setmk] = React.useState("");
   const [dataAccount, setdataAccount] = React.useState([]);
-  function login(tk, mk) {
+  function login() {
         fetch("https://f56tg4-8080.csb.app/accounts")
           .then((response) => response.json())
           .then((data) => {
@@ -29,6 +29,7 @@ export default function Screen01({ navigation, route }) {
                   type: "info",
                   duration: 3000, // Thời gian tồn tại của thông báo, tính bằng millisecond
                 });
+            
               }
           })
           .catch((error) => {
@@ -117,8 +118,7 @@ export default function Screen01({ navigation, route }) {
       </View>
       <TouchableOpacity
         onPress={() => {
-          login(tk, mk);
-          
+          login();
         }}
         style={{
           backgroundColor: "blue",
