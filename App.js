@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View,TouchableOpacity } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
@@ -13,18 +13,39 @@ import CaiDat from "./src/View/CaiDat.js";
 import TomTat from "./src/View/TomTatTruyen.js";
 import Login from "./src/View/Login.js";
 import DangKy from "./src/View/DangKy.js";
-
+import DsBinhLuan from "./src/View/DsBinhLuan.js";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="DangKy" component={DangKy} />
-        <Stack.Screen name="AppChinh" component={AppChinh} />
-        <Stack.Screen name="TomTat" component={TomTat} />
+      <Stack.Navigator >
+        <Stack.Screen options={{headerShown:false}} name="Login" component={Login} />
+        <Stack.Screen options={{headerShown:false}} name="DangKy" component={DangKy} />
+        <Stack.Screen options={{headerShown:false}} name="AppChinh" component={AppChinh} />
+        <Stack.Screen options={{headerShown:false}} name="TomTat" component={TomTat} />
+        <Stack.Screen
+          name="DsBinhLuan"
+          component={DsBinhLuan}
+          options={{
+            title: 'DS. Bình luận',
+            headerTitleStyle: { color: '#FFC125', fontSize: 18 },
+            headerLeft: () => (
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Ionicons name="chevron-back" size={29} color="#FFC125" />
+              </TouchableOpacity>
+            ),
+            headerStyle: {
+              height: 50, // Điều chỉnh chiều cao của header
+              borderBottomWidth: 2, // Điều chỉnh độ rộng của đường gạch dưới
+              backgroundColor: '#111111',
+            },
+            headerTitleContainerStyle: {
+              paddingBottom: 10, // Điều chỉnh khoảng cách giữa header và đường gạch dưới
+            },
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

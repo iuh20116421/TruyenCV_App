@@ -200,7 +200,7 @@ export default function App({ route, navigation }) {
               <View style={styles.ViewBLDG}>
                 <View style={styles.ViewBLDGCon}>
                   <FontAwesome name="commenting-o" size={22} color="white" />
-                  <Text style={styles.ViewBLDGText}>Bình luận{"()"}</Text>
+                  <Text style={styles.ViewBLDGText}>Bình luận {"()"}</Text>
                 </View>
                 <View style={styles.ViewBLDGCon}>
                   <MaterialIcons
@@ -208,7 +208,7 @@ export default function App({ route, navigation }) {
                     size={22}
                     color="white"
                   />
-                  <Text style={styles.ViewBLDGText}>Đánh giá{"()"}</Text>
+                  <Text style={styles.ViewBLDGText}>Đánh giá {"()"}</Text>
                 </View>
                 <TouchableOpacity style={styles.ViewBLDGCon}>
                   <Octicons name="report" size={22} color="white" />
@@ -229,6 +229,21 @@ export default function App({ route, navigation }) {
                     {tomTat ? "Thu nhỏ" : "Xem thêm"}
                   </Text>
                 </TouchableOpacity>
+              </View>
+              <View style={styles.ViewTatCaBinhLuan}>
+                  <Text style={{color:'white',fontSize:18}}>
+                    Các bình luận mới nhất
+                  </Text>
+                  <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('DsBinhLuan');
+                  }
+                  }
+                  >
+                    <Text style={{color:'#FFC125'}}>
+                      Xem toàn bộ
+                    </Text>
+                  </TouchableOpacity>
               </View>
             </View>
           );
@@ -329,7 +344,13 @@ const styles = StyleSheet.create({
     gap: 10,
     alignItems: "flex-end",
     justifyContent: "center",
-    padding:10
+    padding: 10,
+  },
+  ViewTatCaBinhLuan:{
+    width: "90%",
+    height: null,
+    flexDirection: "row",
+    justifyContent:'space-between'
   },
   ViewBottom: {
     flexDirection: "row",
