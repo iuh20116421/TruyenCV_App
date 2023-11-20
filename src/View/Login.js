@@ -22,7 +22,9 @@ export default function Screen01({ navigation, route }) {
             if (data.find(
                 (item) => item.email === tk && item.password === mk
               )) {
-                navigation.navigate("AppChinh", { account: dataAccount });
+                navigation.navigate("AppChinh", { account: data.find(
+                  (item) => item.email === tk && item.password === mk
+                ) });
               } else {
                 showMessage({
                   message: "Tài khoản hoặc mật khẩu không chính xác!!!",

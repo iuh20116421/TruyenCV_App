@@ -241,7 +241,7 @@ export default function App({ route, navigation }) {
                 <View style={styles.ViewBLDGCon}>
                   <FontAwesome name="commenting-o" size={22} color="white" />
                   <Text style={styles.ViewBLDGText}>Bình luận {`(${currentAccounts.length})`}</Text>  
-                  
+
                 </View>
                 <View style={styles.ViewBLDGCon}>
                   <MaterialIcons
@@ -277,7 +277,7 @@ export default function App({ route, navigation }) {
                 </Text>
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate("DsBinhLuan", { idTruyenBL: item.id });
+                    navigation.navigate("DsBinhLuan", { idTruyenBL: item.id, account: route.params?.account });
                   }}
                 >
                   <Text style={{ color: "#FFC125" }}>Xem toàn bộ</Text>

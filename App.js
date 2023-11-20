@@ -53,10 +53,11 @@ export default function App() {
   );
 }
 
-function AppChinh() {
+function AppChinh({route}) {
   return (
     <Tab.Navigator
       initialRouteName="TrangChu"
+     
       screenOptions={{
         tabBarActiveTintColor: "#FFCC33",
         headerStyle: {
@@ -76,6 +77,7 @@ function AppChinh() {
       <Tab.Screen
         name="Trang chủ "
         component={TrangChu}
+        initialParams={{ account: route.params?.account }}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home-outline" color={color} size={size} />

@@ -8,14 +8,18 @@ import {
   TouchableOpacity,
   Modal,
   TouchableWithoutFeedback,
+  TextInput,
 } from "react-native";
+
+import moment from "moment";
 
 export default function App({ route, navigation }) {
   const [accountInfo, setAccountInfo] = useState([]);
   const [dsBinhLuan, setdsBinhLuan] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [modalAccount, setModalAccount] = useState(false);
-
+  const [binhLuan, setBinhLuan] = useState("");
+  const [loadBinhLuan, setloadBinhLuan] = useState("");
   useEffect(() => {
     fetch(
       `https://f56tg4-8080.csb.app/BinhLuan?id_Truyen=${route.params?.idTruyenBL}`
@@ -31,7 +35,7 @@ export default function App({ route, navigation }) {
 
         Promise.all(accountPromises)
           .then((accountData) => {
-            console.log( accountData);
+            console.log(accountData);
             setAccountInfo(accountData);
           })
           .catch((error) => {
@@ -41,8 +45,26 @@ export default function App({ route, navigation }) {
       .catch((error) => {
         console.error("Có lỗi xảy ra: ", error);
       });
-  }, [route.params?.idTruyenBL]);
-console.log(accountInfo)
+  }, [route.params?.idTruyenBL,loadBinhLuan]);
+  function HandelbinhLuan() {
+    if(binhLuan){
+    fetch("https://f56tg4-8080.csb.app/BinhLuan", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ noiDung: binhLuan, ngayBinhLuan: moment().format("YYYY-MM-DD"), id_account: route.params?.account.id, id_Truyen: route.params?.idTruyenBL }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setloadBinhLuan(binhLuan);
+        setBinhLuan("");
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra: ", error);
+      });
+    }
+  }
   return (
     <View style={styles.container}>
       <FlatList
@@ -118,7 +140,7 @@ console.log(accountInfo)
                       </TouchableWithoutFeedback>
                     </Modal>
                   )}
-                   <View
+                  <View
                     style={{
                       width: "100%",
                       height: null,
@@ -187,6 +209,40 @@ console.log(accountInfo)
         }}
         keyExtractor={(item) => item.id.toString()}
       />
+      <View style={styles.ViewBottom}>
+        <TextInput
+          style={{
+            borderWidth: 1,
+            borderRadius: 10,
+            width: "77%",
+            height: "80%",
+            backgroundColor: "rgba(17, 33, 39, 0.92)",
+            color: "white",
+            justifyContent: "center",
+            paddingLeft: 10,
+            fontSize: 16,
+            alignItems: "center",
+          }}
+          placeholder="Enter comment"
+          onChangeText={(text) => setBinhLuan(text)}
+          value={binhLuan}
+        />
+        <TouchableOpacity
+          onPress={() => {
+            HandelbinhLuan();
+          }}
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            width: "22%",
+            height: "80%",
+            backgroundColor: "#FFCC33",
+            borderRadius: 15,
+          }}
+        >
+          <Text style={{ color: "white", fontSize: 16 }}>Gửi</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -197,6 +253,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     backgroundColor: "#111111",
+    justifyContent: "flex-end",
   },
   scrollView: {
     width: "100%",
@@ -215,5 +272,14 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: "center",
     borderRadius: 10,
+  },
+  ViewBottom: {
+    width: "95%",
+    height: "10%",
+    backgroundColor: "#111111",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 10,
   },
 });

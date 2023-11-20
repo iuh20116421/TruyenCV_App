@@ -46,7 +46,8 @@ function ePub() {
     </View>
   );
 }
-function CapNhat() {
+function CapNhat({route}) {
+
   const [dsTruyen, setdsTruyen] = useState([]);
   useEffect(() => {
     fetch(`https://f56tg4-8080.csb.app/DsTruyen`)
@@ -64,7 +65,7 @@ function CapNhat() {
 
   const renderItem = ({ item }) => {
     const handlePress = () => {
-      navigation.navigate('TomTat', { idTruyenTT: item.id });
+      navigation.navigate('TomTat', { idTruyenTT: item.id, account: route.params?.account });
     };
 
     return (
@@ -96,7 +97,7 @@ function CapNhat() {
 }
 const Tab = createMaterialTopTabNavigator();
 
-export default function App() {
+export default function App({route}) {
   return (
       <Tab.Navigator
       tabBarOptions={{
@@ -110,7 +111,7 @@ export default function App() {
         tabBarStyle: { backgroundColor: "#111111" },
       }}
     >
-      <Tab.Screen name="Cập nhật" component={CapNhat} />
+      <Tab.Screen name="Cập nhật" initialParams={{ account: route.params?.account }} component={CapNhat}  />
       <Tab.Screen name="Danh mục" component={DanhMuc} />
       <Tab.Screen name="Đã full" component={DaFull} />
       <Tab.Screen name="Sáng tác" component={SangTac} />
