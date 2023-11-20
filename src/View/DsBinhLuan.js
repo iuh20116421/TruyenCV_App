@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -7,11 +6,15 @@ import {
   View,
   Image,
   TouchableOpacity,
+  Modal,
+  TouchableWithoutFeedback,
 } from "react-native";
 
 export default function App({ route, navigation }) {
   const [accountInfo, setAccountInfo] = useState([]);
   const [dsBinhLuan, setdsBinhLuan] = useState([]);
+  const [selectedAccount, setSelectedAccount] = useState(null);
+  const [modalAccount, setModalAccount] = useState(false);
 
   useEffect(() => {
     fetch(
@@ -20,18 +23,16 @@ export default function App({ route, navigation }) {
       .then((response) => response.json())
       .then((data) => {
         setdsBinhLuan(data);
-
-        // Lấy danh sách các promise cho mỗi tài khoản
         const accountPromises = data.map((item) =>
           fetch(
             `https://f56tg4-8080.csb.app/accounts?id=${item.id_account}`
           ).then((response) => response.json())
         );
 
-        // Chờ tất cả các promise hoàn thành
         Promise.all(accountPromises)
           .then((accountData) => {
-            setAccountInfo(accountData); // Lưu thông tin tài khoản vào state
+            console.log( accountData);
+            setAccountInfo(accountData);
           })
           .catch((error) => {
             console.error("Có lỗi xảy ra khi lấy thông tin tài khoản: ", error);
@@ -41,14 +42,14 @@ export default function App({ route, navigation }) {
         console.error("Có lỗi xảy ra: ", error);
       });
   }, [route.params?.idTruyenBL]);
-
+console.log(accountInfo)
   return (
     <View style={styles.container}>
       <FlatList
         style={{ width: "95%", height: "100%" }}
         data={dsBinhLuan}
         renderItem={({ item, index }) => {
-          const currentAccounts = accountInfo[index] || []; // Lấy danh sách các tài khoản từ state
+          const currentAccounts = accountInfo[index] || [];
           return (
             <View key={index} style={styles.scrollView}>
               {currentAccounts.map((currentAccount, idx) => (
@@ -68,6 +69,14 @@ export default function App({ route, navigation }) {
                       justifyContent: "center",
                       marginRight: 20,
                     }}
+                    onPress={() => {
+                      setSelectedAccount(currentAccount);
+                      setModalAccount(true);
+                      // setTimeout(() => {
+                      //   setModalAccount(false);
+                      //   setSelectedAccount(null);
+                      // }, 3000); // 3 giây
+                    }}
                   >
                     <Image
                       style={{ width: 55, height: 55, borderRadius: 50 }}
@@ -77,7 +86,39 @@ export default function App({ route, navigation }) {
                     />
                   </TouchableOpacity>
 
-                  <View
+                  {/* Modal */}
+                  {selectedAccount && modalAccount && (
+                    <Modal
+                      animationType="slide"
+                      transparent={true}
+                      visible={modalAccount}
+                      onRequestClose={() => {
+                        setModalAccount(!modalAccount);
+                      }}
+                    >
+                      <TouchableWithoutFeedback
+                        onPress={() => setModalAccount(false)}
+                      >
+                        <View style={styles.modalContainer}>
+                          <View style={styles.modalContent}>
+                            <Text style={{ color: "white", fontSize: 22 }}>
+                              {selectedAccount.name}
+                            </Text>
+                            <Image
+                              style={{
+                                width: 100,
+                                height: 100,
+                                borderRadius: 50,
+                              }}
+                              source={{ uri: selectedAccount.image }}
+                            />
+                            {/* Hiển thị thông tin khác của tài khoản ở đây */}
+                          </View>
+                        </View>
+                      </TouchableWithoutFeedback>
+                    </Modal>
+                  )}
+                   <View
                     style={{
                       width: "100%",
                       height: null,
@@ -89,7 +130,7 @@ export default function App({ route, navigation }) {
                     </Text>
                     <View
                       style={{
-                        marginTop: 25,
+                        marginTop: 20,
                         width: "87%",
                         height: null,
                         flexDirection: "row",
@@ -100,19 +141,40 @@ export default function App({ route, navigation }) {
                         style={{
                           width: "78%",
                           height: null,
-                          backgroundColor: "#222222",
+                          backgroundColor: "rgba(17, 33, 39, 0.92)",
                           borderRadius: 10,
                         }}
                       >
                         <Text
-                          style={{ color: "white", fontSize: 16, padding: 10 }}
+                          style={{
+                            color: "white",
+                            fontSize: 16,
+                            padding: 10,
+                            paddingBottom: 0,
+                          }}
                         >
                           {item.noiDung}
                         </Text>
+                        <View>
+                          <Text
+                            style={{
+                              color: "white",
+                              fontSize: 16,
+                              padding: 10,
+                              textAlign: "right",
+                            }}
+                          >
+                            {item.ngayBinhLuan}
+                          </Text>
+                        </View>
                       </View>
                       <TouchableOpacity
-                      style={{justifyContent:'center',alignItems:'center'}}>
-                        <Text style={{ color: "white", fontSize: 44, }}>
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Text style={{ color: "white", fontSize: 44 }}>
                           ...
                         </Text>
                       </TouchableOpacity>
@@ -141,5 +203,17 @@ const styles = StyleSheet.create({
     height: "100%",
     gap: 10,
     marginTop: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#111111",
+    padding: 20,
+    alignItems: "center",
+    borderRadius: 10,
   },
 });

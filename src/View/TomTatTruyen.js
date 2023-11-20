@@ -16,18 +16,57 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Octicons } from "@expo/vector-icons";
 export default function App({ route, navigation }) {
   const [TruyenTT, setTruyenTT] = useState([]);
+  const [accountInfo, setAccountInfo] = useState([]);
+  const [TruyenInfo, setTruyenInfo] = useState([]);
   useEffect(() => {
     fetch(`https://f56tg4-8080.csb.app/DsTruyen?id=${route.params?.idTruyenTT}`)
       .then((response) => response.json())
       .then((data) => {
         setTruyenTT(data);
+        console.log(data);
+        const TruyenPromises = data.map(() =>
+          fetch(
+            `https://f56tg4-8080.csb.app/BinhLuan?id_Truyen=${route.params?.idTruyenTT}`
+          ).then((response) => response.json())
+        );
+
+        Promise.all(TruyenPromises)
+          .then((TruyenData) => {
+            console.log(TruyenData);
+            setTruyenInfo(TruyenData);
+            TruyenData.forEach((binhLuan, index) => {
+              const accountPromises = binhLuan.map((item) =>
+                fetch(
+                  `https://f56tg4-8080.csb.app/accounts?id=${item.id_account}`
+                ).then((response) => response.json())
+              );
+
+              Promise.all(accountPromises)
+                .then((accountData) => {
+                  // accountData chứa thông tin tài khoản tương ứng với bình luận tại index
+                  setAccountInfo((prevAccountInfo) => [
+                    ...prevAccountInfo,
+                    accountData,
+                  ]);
+                  console.log(accountData); // Kiểm tra dữ liệu tài khoản trả về từ API
+                })
+                .catch((error) => {
+                  console.error(
+                    "Có lỗi xảy ra khi lấy thông tin tài khoản: ",
+                    error
+                  );
+                });
+            });
+          })
+          .catch((error) => {
+            console.error("Có lỗi xảy ra khi lấy thông tin tài khoản: ", error);
+          });
       })
       .catch((error) => {
         // Xử lý lỗi nếu có
         console.error("Có lỗi xảy ra: ", error);
       });
   }, []);
-
   const [danhGia, setDanhGia] = useState(0);
   const handleDanhGia = () => {
     setDanhGia(0);
@@ -39,7 +78,8 @@ export default function App({ route, navigation }) {
       <FlashMessage position="top" />
       <FlatList
         data={TruyenTT}
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
+          const currentAccounts = accountInfo[index] || [];
           return (
             <View style={styles.scrollView}>
               <View style={styles.AnhvaTen}>
@@ -200,7 +240,8 @@ export default function App({ route, navigation }) {
               <View style={styles.ViewBLDG}>
                 <View style={styles.ViewBLDGCon}>
                   <FontAwesome name="commenting-o" size={22} color="white" />
-                  <Text style={styles.ViewBLDGText}>Bình luận {"()"}</Text>
+                  <Text style={styles.ViewBLDGText}>Bình luận {`(${currentAccounts.length})`}</Text>  
+                  
                 </View>
                 <View style={styles.ViewBLDGCon}>
                   <MaterialIcons
@@ -231,25 +272,93 @@ export default function App({ route, navigation }) {
                 </TouchableOpacity>
               </View>
               <View style={styles.ViewTatCaBinhLuan}>
-                  <Text style={{color:'white',fontSize:18}}>
-                    Các bình luận mới nhất
-                  </Text>
-                  <TouchableOpacity
+                <Text style={{ color: "white", fontSize: 18 }}>
+                  Các bình luận mới nhất
+                </Text>
+                <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate('DsBinhLuan',{idTruyenBL: item.id});
-                  }
-                  }
-                  >
-                    <Text style={{color:'#FFC125'}}>
-                      Xem toàn bộ
-                    </Text>
-                  </TouchableOpacity>
+                    navigation.navigate("DsBinhLuan", { idTruyenBL: item.id });
+                  }}
+                >
+                  <Text style={{ color: "#FFC125" }}>Xem toàn bộ</Text>
+                </TouchableOpacity>
               </View>
+              {/* Danh sách bình luận mới */}
+
+              {currentAccounts.slice(0,4).map((currentAccount, idx) => (
+                <View
+                  style={{
+                    width: "93%",
+                    height: null,
+                    flexDirection: "row",
+                    justifyContent:'center'
+                  }}
+                  key={idx}
+                >
+                  <Image
+                    style={{
+                      width: 55,
+                      height: 55,
+                      borderRadius: 50,
+                      marginRight: 15,
+                    }}
+                    source={{
+                      uri: currentAccount[index].image,
+                    }}
+                  />
+                  <View
+                    style={{
+                      marginTop: 20,
+                      width: "87%",
+                      height: null,
+                      flexDirection: "column",
+                      gap: 10,
+                    }}
+                  >
+                    <Text style={{ color: "white", fontSize: 18 }}>
+                      {currentAccount[index].name}
+                    </Text>
+                    <View
+                        style={{
+                          width: "95%",
+                          height: null,
+                          backgroundColor: "rgba(17, 33, 39, 0.92)",
+                          borderRadius: 10,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: "white",
+                            fontSize: 16,
+                            padding: 10,
+                            paddingBottom: 0,
+                          }}
+                        >
+                            {TruyenInfo[index][idx].noiDung}{" "}
+                        </Text>
+                        <View>
+                          <Text
+                            style={{
+                              color: "white",
+                              fontSize: 16,
+                              padding: 10,
+                              textAlign: "right",
+                            }}
+                          >
+                             {TruyenInfo[index][idx].ngayBinhLuan}{" "}
+                          </Text>
+                        </View>
+                      </View>
+                   
+                  </View>
+                </View>
+              ))}
             </View>
           );
         }}
-        style={{ flex: 1, width: "100%" }}
+        keyExtractor={(item, index) => index.toString()} // Đảm bảo key unique cho mỗi item
       />
+
       <View style={styles.ViewBottom}>
         <TouchableOpacity
           onPress={() => {
@@ -346,11 +455,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 10,
   },
-  ViewTatCaBinhLuan:{
+  ViewTatCaBinhLuan: {
     width: "90%",
     height: null,
     flexDirection: "row",
-    justifyContent:'space-between'
+    justifyContent: "space-between",
+    marginTop: 10,
   },
   ViewBottom: {
     flexDirection: "row",
