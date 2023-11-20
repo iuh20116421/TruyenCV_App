@@ -28,7 +28,8 @@ export default function App() {
         <Stack.Screen
           name="DsBinhLuan"
           component={DsBinhLuan}
-          options={{
+          options={({navigation})=>(
+            {
             title: 'DS. Bình luận',
             headerTitleStyle: { color: '#FFC125', fontSize: 18 },
             headerLeft: () => (
@@ -44,7 +45,8 @@ export default function App() {
             headerTitleContainerStyle: {
               paddingBottom: 10, // Điều chỉnh khoảng cách giữa header và đường gạch dưới
             },
-          }}
+          
+          })}
         />
       </Stack.Navigator>
     </NavigationContainer>

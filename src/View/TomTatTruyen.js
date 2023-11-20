@@ -236,7 +236,7 @@ export default function App({ route, navigation }) {
                   </Text>
                   <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate('DsBinhLuan');
+                    navigation.navigate('DsBinhLuan',{idTruyenBL: item.id});
                   }
                   }
                   >
