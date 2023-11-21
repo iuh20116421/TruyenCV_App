@@ -87,7 +87,9 @@ function AppChinh({route}) {
       <Tab.Screen
         name="Tìm kiếm"
         component={TimKiem}
+        initialParams={{ account: route.params?.account }}
         options={{
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="search" color={color} size={size} />
           ),
