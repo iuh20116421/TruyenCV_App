@@ -14,6 +14,7 @@ import TomTat from "./src/View/TomTatTruyen.js";
 import Login from "./src/View/Login.js";
 import DangKy from "./src/View/DangKy.js";
 import DsBinhLuan from "./src/View/DsBinhLuan.js";
+import Noidung from "./src/View/Noidung.js";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -25,6 +26,7 @@ export default function App() {
         <Stack.Screen options={{headerShown:false}} name="DangKy" component={DangKy} />
         <Stack.Screen options={{headerShown:false}} name="AppChinh" component={AppChinh} />
         <Stack.Screen options={{headerShown:false}} name="TomTat" component={TomTat} />
+        <Stack.Screen options={{headerShown:false}} name="Noidung" component={Noidung} />
         <Stack.Screen
           name="DsBinhLuan"
           component={DsBinhLuan}

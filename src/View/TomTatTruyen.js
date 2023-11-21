@@ -370,7 +370,7 @@ export default function App({ route, navigation }) {
         <TouchableOpacity
           style={styles.NutDoc}
           onPress={() => {
-            navigation.goBack();
+            navigation.navigate("Noidung", { idTruyen: route.params?.idTruyenTT, account: route.params?.account });
           }}
         >
           <Text style={{ fontSize: 24, color: "white" }}>Đọc Truyện</Text>
