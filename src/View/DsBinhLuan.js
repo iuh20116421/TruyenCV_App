@@ -45,24 +45,29 @@ export default function App({ route, navigation }) {
       .catch((error) => {
         console.error("Có lỗi xảy ra: ", error);
       });
-  }, [route.params?.idTruyenBL,loadBinhLuan]);
+  }, [route.params?.idTruyenBL, loadBinhLuan]);
   function HandelbinhLuan() {
-    if(binhLuan){
-    fetch("https://f56tg4-8080.csb.app/BinhLuan", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ noiDung: binhLuan, ngayBinhLuan: moment().format("YYYY-MM-DD"), id_account: route.params?.account.id, id_Truyen: route.params?.idTruyenBL }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setloadBinhLuan(binhLuan);
-        setBinhLuan("");
+    if (binhLuan) {
+      fetch("https://f56tg4-8080.csb.app/BinhLuan", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          noiDung: binhLuan,
+          ngayBinhLuan: moment().format("YYYY-MM-DD"),
+          id_account: route.params?.account.id,
+          id_Truyen: route.params?.idTruyenBL,
+        }),
       })
-      .catch((error) => {
-        console.error("Có lỗi xảy ra: ", error);
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          setloadBinhLuan(binhLuan);
+          setBinhLuan("");
+        })
+        .catch((error) => {
+          console.error("Có lỗi xảy ra: ", error);
+        });
     }
   }
   return (
@@ -72,14 +77,15 @@ export default function App({ route, navigation }) {
         data={dsBinhLuan}
         renderItem={({ item, index }) => {
           const currentAccounts = accountInfo[index] || [];
+          const isCurrentUserComment =
+            item.id_account === route.params?.account.id;
           return (
             <View key={index} style={styles.scrollView}>
               {currentAccounts.map((currentAccount, idx) => (
                 <View
                   style={{
                     width: "100%",
-                    height: null,
-                    flexDirection: "row",
+                    flexDirection: isCurrentUserComment ? "row-reverse" : "row", // Thay đổi hướng hiển thị của bình luận
                   }}
                   key={idx}
                 >
@@ -89,7 +95,6 @@ export default function App({ route, navigation }) {
                       height: 55,
                       alignItems: "center",
                       justifyContent: "center",
-                      marginRight: 20,
                     }}
                     onPress={() => {
                       setSelectedAccount(currentAccount);
@@ -140,11 +145,16 @@ export default function App({ route, navigation }) {
                       </TouchableWithoutFeedback>
                     </Modal>
                   )}
+
                   <View
                     style={{
-                      width: "100%",
+                      width: "87%",
                       height: null,
                       flexDirection: "column",
+                      alignItems: isCurrentUserComment
+                        ? "flex-end"
+                        : "flex-start",
+                      padding: 15,
                     }}
                   >
                     <Text style={{ color: "white", fontSize: 22 }}>
@@ -152,16 +162,18 @@ export default function App({ route, navigation }) {
                     </Text>
                     <View
                       style={{
-                        marginTop: 20,
-                        width: "87%",
+                        marginTop: 10,
+                        width: "100%",
                         height: null,
-                        flexDirection: "row",
                         gap: 10,
+                        flexDirection: isCurrentUserComment
+                          ? "row-reverse"
+                          : "row", // Điều chỉnh vị trí hiển thị bình luận
                       }}
                     >
                       <View
                         style={{
-                          width: "78%",
+                          width: "88%",
                           height: null,
                           backgroundColor: "rgba(17, 33, 39, 0.92)",
                           borderRadius: 10,
@@ -172,7 +184,6 @@ export default function App({ route, navigation }) {
                             color: "white",
                             fontSize: 16,
                             padding: 10,
-                            paddingBottom: 0,
                           }}
                         >
                           {item.noiDung}
@@ -194,6 +205,7 @@ export default function App({ route, navigation }) {
                         style={{
                           justifyContent: "center",
                           alignItems: "center",
+                          paddingBottom: 25,
                         }}
                       >
                         <Text style={{ color: "white", fontSize: 44 }}>
@@ -258,7 +270,6 @@ const styles = StyleSheet.create({
   scrollView: {
     width: "100%",
     height: "100%",
-    gap: 10,
     marginTop: 10,
   },
   modalContainer: {
