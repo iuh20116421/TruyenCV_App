@@ -18,7 +18,7 @@ function DanhMuc({ navigation }) {
       truyen === "Truyện Sáng Tác" ||
       truyen === "Truyện Đọc Nhiều"
     ) {
-      navigation.navigate("DanhMucCon", { loaiTruyen: truyen });
+      navigation.navigate("DanhMucLoaiTruyen", { loaiTruyen: truyen });
 
     } else
     {
