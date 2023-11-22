@@ -14,7 +14,36 @@ export default function Screen01({ navigation, route }) {
   const [tk, setTK] = React.useState("");
   const [mk, setmk] = React.useState("");
   const [dataAccount, setdataAccount] = React.useState([]);
+  // Hàm giúp kiểm tra regex(tính hợp lệ-ràng buộc) cho email
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Hàm giúp kiểm tra regex(tính hợp lệ-ràng buộc) cho mật khẩu
+  const isValidPassword = (password) => {
+    // Ví dụ: Ràng buộc mà tôi yêu cầu là ít nhất 8 ký tự và phải chứa ít nhất một chữ cái và một số
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    return passwordRegex.test(password);
+  };
   function login() {
+    if (!isValidEmail(tk)) {
+      showMessage({
+        message: "Địa chỉ email không hợp lệ!",
+        type: "info",
+        duration: 3000,
+      });
+      return;
+    }
+
+    if (!isValidPassword(mk)) {
+      showMessage({
+        message: "Mật khẩu không hợp lệ! Mật khẩu cần ít nhất 8 ký tự và chứa ít nhất một chữ cái và một số.",
+        type: "info",
+        duration: 3000,
+      });
+      return;
+    }
         fetch("https://f56tg4-8080.csb.app/accounts")
           .then((response) => response.json())
           .then((data) => {
