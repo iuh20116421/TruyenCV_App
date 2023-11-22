@@ -11,11 +11,57 @@ import * as React from "react";
 import FlashMessage, { showMessage } from "react-native-flash-message";
 import { MaterialIcons } from "@expo/vector-icons";
 
+// Hàm kiểm tra regex(ràng buộc) cho tên đăng nhập
+const isValidUsername = (username) => {
+  // Chỉ chấp nhận chữ cái và số, ít nhất 5 ký tự
+  const usernameRegex = /^[a-zA-Z0-9]{5,}$/;
+  return usernameRegex.test(username);
+};
+
+// Hàm kiểm tra regex(ràng buộc) cho email
+const isValidEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+// Hàm kiểm tra regex(ràng buộc) cho mật khẩu
+const isValidPassword = (password) => {
+  // Ví dụ: Ràng buộc mà tôi yêu cầu là ít nhất 8 ký tự và chứa ít nhất một chữ cái và một số
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  return passwordRegex.test(password);
+};
 export default function Screen01({ navigation }) {
   const [tk, setTK] = React.useState("");
   const [mk, setmk] = React.useState("");
   const [name, setName] = React.useState("");
   const registerAccount = () => {
+    if (!isValidUsername(name)) {
+      showMessage({
+        message: "Tên đăng nhập không hợp lệ! Tên đăng nhập cần ít nhất 5 ký tự và chỉ chấp nhận chữ cái và số.",
+        type: "info",
+        duration: 3000,
+      });
+      return;
+    }
+
+    if (!isValidEmail(tk)) {
+      showMessage({
+        message: "Địa chỉ email không hợp lệ!",
+        type: "info",
+        duration: 3000,
+      });
+      return;
+    }
+
+    if (!isValidPassword(mk)) {
+      showMessage({
+        message: "Mật khẩu không hợp lệ! Mật khẩu cần ít nhất 8 ký tự và chứa ít nhất một chữ cái và một số.",
+        type: "info",
+        duration: 3000,
+      });
+      return;
+    }
+
     fetch("https://f56tg4-8080.csb.app/accounts", {
       method: "POST",
       headers: {
