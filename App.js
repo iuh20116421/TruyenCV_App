@@ -15,6 +15,8 @@ import Login from "./src/View/Login.js";
 import DangKy from "./src/View/DangKy.js";
 import DsBinhLuan from "./src/View/DsBinhLuan.js";
 import Noidung from "./src/View/Noidung.js";
+import DanhMucCon from "./src/View/DanhMucCon.js";
+import DanhMucTLTruyen from "./src/View/DanhMucTLTruyen.js";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -27,6 +29,8 @@ export default function App() {
         <Stack.Screen options={{headerShown:false}} name="AppChinh" component={AppChinh} />
         <Stack.Screen options={{headerShown:false}} name="TomTat" component={TomTat} />
         <Stack.Screen options={{headerShown:false}} name="Noidung" component={Noidung} />
+        <Stack.Screen  name="DanhMucCon" component={DanhMucCon} />
+        <Stack.Screen  name="DanhMucTLTruyen" component={DanhMucTLTruyen} />
         <Stack.Screen
           name="DsBinhLuan"
           component={DsBinhLuan}
@@ -40,12 +44,12 @@ export default function App() {
               </TouchableOpacity>
             ),
             headerStyle: {
-              height: 50, // Điều chỉnh chiều cao của header
-              borderBottomWidth: 2, // Điều chỉnh độ rộng của đường gạch dưới
+              height: 50, 
+              borderBottomWidth: 2, 
               backgroundColor: '#111111',
             },
             headerTitleContainerStyle: {
-              paddingBottom: 10, // Điều chỉnh khoảng cách giữa header và đường gạch dưới
+              paddingBottom: 10, 
             },
           
           })}

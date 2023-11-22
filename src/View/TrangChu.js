@@ -11,7 +11,21 @@ import {
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-function DanhMuc() {
+function DanhMuc({ navigation }) {
+  function handleTruyen(truyen) {
+    if (
+      truyen === "Truyện CV" ||
+      truyen === "Truyện Sáng Tác" ||
+      truyen === "Truyện Đọc Nhiều"
+    ) {
+      navigation.navigate("DanhMucCon", { loaiTruyen: truyen });
+
+    } else
+    {
+      navigation.navigate("DanhMucTLTruyen", { loaiTruyen: truyen });
+
+    }
+  }
   const danhmuc = [
     {
       name: "Truyện CV",
@@ -58,20 +72,30 @@ function DanhMuc() {
   ];
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center",backgroundColor:'#111111' }}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#111111",
+      }}
+    >
       <FlatList
         style={{ width: "100%" }}
         data={danhmuc}
         numColumns={2}
         renderItem={({ item }) => {
           return (
-            <View  style={{
-              width: "50%",
-              height: "100%",
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
+            <View
+              style={{
+                width: "50%",
+                height: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <TouchableOpacity
+                onPress={() => handleTruyen(item.name)}
                 style={{
                   width: "90%",
                   height: 50,
