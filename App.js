@@ -15,7 +15,7 @@ import Login from "./src/View/Login.js";
 import DangKy from "./src/View/DangKy.js";
 import DsBinhLuan from "./src/View/DsBinhLuan.js";
 import Noidung from "./src/View/Noidung.js";
-import DanhMucCon from "./src/View/DanhMucCon.js";
+import DanhMucLoaiTruyen from "./src/View/DanhMucLoaiTruyen.js";
 import DanhMucTLTruyen from "./src/View/DanhMucTLTruyen.js";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -29,7 +29,7 @@ export default function App() {
         <Stack.Screen options={{headerShown:false}} name="AppChinh" component={AppChinh} />
         <Stack.Screen options={{headerShown:false}} name="TomTat" component={TomTat} />
         <Stack.Screen options={{headerShown:false}} name="Noidung" component={Noidung} />
-        <Stack.Screen  name="DanhMucCon" component={DanhMucCon} />
+        <Stack.Screen  name="DanhMucLoaiTruyen" component={DanhMucLoaiTruyen} />
         <Stack.Screen  name="DanhMucTLTruyen" component={DanhMucTLTruyen} />
         <Stack.Screen
           name="DsBinhLuan"
