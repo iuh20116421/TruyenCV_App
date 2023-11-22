@@ -29,8 +29,8 @@ export default function App() {
         <Stack.Screen options={{headerShown:false}} name="AppChinh" component={AppChinh} />
         <Stack.Screen options={{headerShown:false}} name="TomTat" component={TomTat} />
         <Stack.Screen options={{headerShown:false}} name="Noidung" component={Noidung} />
-        <Stack.Screen  name="DanhMucLoaiTruyen" component={DanhMucLoaiTruyen} />
-        <Stack.Screen  name="DanhMucTLTruyen" component={DanhMucTLTruyen} />
+        <Stack.Screen options={{headerShown:false}} name="DanhMucLoaiTruyen" component={DanhMucLoaiTruyen} />
+        <Stack.Screen options={{headerShown:false}} name="DanhMucTLTruyen" component={DanhMucTLTruyen} />
         <Stack.Screen
           name="DsBinhLuan"
           component={DsBinhLuan}

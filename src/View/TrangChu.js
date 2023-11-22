@@ -11,18 +11,18 @@ import {
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-function DanhMuc({ navigation }) {
+function DanhMuc({ navigation,route }) {
   function handleTruyen(truyen) {
     if (
       truyen === "Truyện CV" ||
       truyen === "Truyện Sáng Tác" ||
       truyen === "Truyện Đọc Nhiều"
     ) {
-      navigation.navigate("DanhMucLoaiTruyen", { loaiTruyen: truyen });
+      navigation.navigate("DanhMucLoaiTruyen", { loaiTruyen: truyen, account: route.params?.account, });
 
     } else
     {
-      navigation.navigate("DanhMucTLTruyen", { loaiTruyen: truyen });
+      navigation.navigate("DanhMucTLTruyen", { loaiTruyen: truyen, account: route.params?.account, });
 
     }
   }
@@ -55,7 +55,7 @@ function DanhMuc({ navigation }) {
       name: "Đồng Nhân",
     },
     {
-      name: "Dã sử",
+      name: "Dã Sử",
     },
     {
       name: "Cạnh Kỹ",
@@ -218,7 +218,7 @@ export default function App({ route }) {
         initialParams={{ account: route.params?.account }}
         component={CapNhat}
       />
-      <Tab.Screen name="Danh mục" component={DanhMuc} />
+      <Tab.Screen name="Danh mục"  initialParams={{ account: route.params?.account }} component={DanhMuc} />
       <Tab.Screen name="Đã full" component={DaFull} />
       <Tab.Screen name="Sáng tác" component={SangTac} />
       <Tab.Screen name="Của bạn" component={CuaBan} />
