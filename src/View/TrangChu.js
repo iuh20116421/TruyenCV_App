@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
-import { useNavigation } from '@react-navigation/native';
-import { useEffect,useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -12,9 +12,86 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 function DanhMuc() {
+  const danhmuc = [
+    {
+      name: "Truyện CV",
+    },
+    {
+      name: "Truyện Sáng Tác",
+    },
+    {
+      name: "Truyện Đọc Nhiều",
+    },
+    {
+      name: "Tiên Hiệp",
+    },
+    {
+      name: "Huyền Nhuyễn",
+    },
+    {
+      name: "Khoa Huyễn",
+    },
+    {
+      name: "Võng Du",
+    },
+    {
+      name: "Đô Thị",
+    },
+    {
+      name: "Đồng Nhân",
+    },
+    {
+      name: "Dã sử",
+    },
+    {
+      name: "Cạnh Kỹ",
+    },
+    {
+      name: "Huyền Nghi",
+    },
+    {
+      name: "Kiếm Hiệp",
+    },
+    {
+      name: "Kỳ Ảo",
+    },
+  ];
+
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>DanhMuc!</Text>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center",backgroundColor:'#111111' }}>
+      <FlatList
+        style={{ width: "100%" }}
+        data={danhmuc}
+        numColumns={2}
+        renderItem={({ item }) => {
+          return (
+            <View  style={{
+              width: "50%",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}>
+              <TouchableOpacity
+                style={{
+                  width: "90%",
+                  height: 50,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  margin: 10,
+                  borderRadius: 7,
+                  backgroundColor: "rgba(17, 33, 39, 0.92)",
+                }}
+              >
+                <Text
+                  style={{ fontSize: 20, color: "white", textAlign: "center" }}
+                >
+                  {item.name}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          );
+        }}
+      />
     </View>
   );
 }
@@ -46,8 +123,7 @@ function ePub() {
     </View>
   );
 }
-function CapNhat({route}) {
-
+function CapNhat({ route }) {
   const [dsTruyen, setdsTruyen] = useState([]);
   useEffect(() => {
     fetch(`https://f56tg4-8080.csb.app/DsTruyen`)
@@ -65,22 +141,24 @@ function CapNhat({route}) {
 
   const renderItem = ({ item }) => {
     const handlePress = () => {
-      navigation.navigate('TomTat', { idTruyenTT: item.id, account: route.params?.account });
+      navigation.navigate("TomTat", {
+        idTruyenTT: item.id,
+        account: route.params?.account,
+      });
     };
 
     return (
       <View style={styles.ViewFlatlis}>
         <TouchableOpacity style={styles.dstruyen} onPress={handlePress}>
           <View style={styles.ImageTruyen}>
-            <Image source={{uri: item.image}} style={styles.ImageTruyen} />
+            <Image source={{ uri: item.image }} style={styles.ImageTruyen} />
           </View>
           <View style={styles.ViewChu}>
             <Text style={styles.TexTTen}>{item.ten}</Text>
             <Text style={styles.Textduoi}>
               {item.tacGia}
               {"\n"}
-              {item.soChuong} chương -{" "}
-              {item.trangThai}
+              {item.soChuong} chương - {item.trangThai}
               {"\n"}
               {item.ngayCapNhat}
             </Text>
@@ -97,9 +175,9 @@ function CapNhat({route}) {
 }
 const Tab = createMaterialTopTabNavigator();
 
-export default function App({route}) {
+export default function App({ route }) {
   return (
-      <Tab.Navigator
+    <Tab.Navigator
       tabBarOptions={{
         scrollEnabled: true,
         activeTintColor: "#FFCC33",
@@ -111,14 +189,17 @@ export default function App({route}) {
         tabBarStyle: { backgroundColor: "#111111" },
       }}
     >
-      <Tab.Screen name="Cập nhật" initialParams={{ account: route.params?.account }} component={CapNhat}  />
+      <Tab.Screen
+        name="Cập nhật"
+        initialParams={{ account: route.params?.account }}
+        component={CapNhat}
+      />
       <Tab.Screen name="Danh mục" component={DanhMuc} />
       <Tab.Screen name="Đã full" component={DaFull} />
       <Tab.Screen name="Sáng tác" component={SangTac} />
       <Tab.Screen name="Của bạn" component={CuaBan} />
       <Tab.Screen name="ePub" component={ePub} />
     </Tab.Navigator>
-   
   );
 }
 const styles = StyleSheet.create({
@@ -148,13 +229,12 @@ const styles = StyleSheet.create({
     width: "30%",
     height: "100%",
     flex: 1,
-    
   },
   ViewChu: {
     width: "70%",
     height: "100%",
     margin: 7,
-    justifyContent:'center'
+    justifyContent: "center",
   },
   TexTTen: {
     fontSize: 17,
