@@ -37,10 +37,11 @@ export default function Screen01({ navigation }) {
   const registerAccount = () => {
     if (!isValidUsername(name)) {
       showMessage({
-        message: "Tên đăng nhập không hợp lệ! Tên đăng nhập cần ít nhất 5 ký tự và chỉ chấp nhận chữ cái và số.",
+        message: "Tên đăng nhập không hợp lệ! Tên đăng nhập cần ít nhất 4 ký tự, chỉ chấp nhận chữ cái và số.",
         type: "info",
         duration: 3000,
       });
+      console.error("Invalid username. Tên đăng nhập cần ít nhất 4 ký tự, chỉ chấp nhận chữ cái và số.");
       return;
     }
 
@@ -50,6 +51,7 @@ export default function Screen01({ navigation }) {
         type: "info",
         duration: 3000,
       });
+      console.error("Invalid email");
       return;
     }
 
@@ -59,6 +61,7 @@ export default function Screen01({ navigation }) {
         type: "info",
         duration: 3000,
       });
+      console.error("Invalid password. Mật khẩu cần ít nhất 8 ký tự và chứa ít nhất một chữ cái và một số.");
       return;
     }
 
