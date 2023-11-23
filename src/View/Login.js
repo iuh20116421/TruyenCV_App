@@ -10,6 +10,7 @@ import {
 import * as React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import FlashMessage, { showMessage } from "react-native-flash-message";
+import Modal from "react-native-modal";
 export default function Screen01({ navigation, route }) {
   const [tk, setTK] = React.useState("");
   const [mk, setmk] = React.useState("");
@@ -26,6 +27,7 @@ export default function Screen01({ navigation, route }) {
   //   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
   //   return passwordRegex.test(password);
   // };
+  const [isModalVisible, setModalVisible] = React.useState(false);
   function login() {
     // if (!isValidEmail(tk)) {
     //   showMessage({
@@ -44,33 +46,38 @@ export default function Screen01({ navigation, route }) {
     //   });
     //   return;
     // }
-        fetch("https://f56tg4-8080.csb.app/accounts")
-          .then((response) => response.json())
-          .then((data) => {
-            setdataAccount(data);
-            if (data.find(
-                (item) => item.email === tk && item.password === mk
-              )) {
-                navigation.navigate("AppChinh", { account: data.find(
-                  (item) => item.email === tk && item.password === mk
-                ) });
-              } else {
-                showMessage({
-                  message: "Tài khoản hoặc mật khẩu không chính xác!!!",
-                  type: "info",
-                  duration: 3000, // Thời gian tồn tại của thông báo, tính bằng millisecond
-                });
-            
-              }
-          })
-          .catch((error) => {
-            // Xử lý lỗi nếu có
-            console.error("Có lỗi xảy ra: ", error);
+    fetch("https://r3kpvw-8080.csb.app/accounts")
+      .then((response) => response.json())
+      .then((data) => {
+        setdataAccount(data);
+        if (data.find((item) => item.email === tk && item.password === mk)) {
+          navigation.navigate("AppChinh", {
+            account: data.find(
+              (item) => item.email === tk && item.password === mk
+            ),
           });
+        } else {
+          setModalVisible(true);
+          setTimeout(() => {
+            setModalVisible(false);
+          }, 2500); // Đóng modal sau 3 giây
+          return;
+         
+        }
+      })
+      .catch((error) => {
+        // Xử lý lỗi nếu có
+        console.error("Có lỗi xảy ra: ", error);
+      });
   }
+
   return (
     <View style={styles.container}>
-      <FlashMessage position="top" />
+       {isModalVisible && (
+          <View style={[styles.modal, styles.modalTop]}>
+           <Text style={{color:'white'}}>Thông tin đănh nhập hoặc mật khẩu không chính xác</Text>
+          </View>
+        )}
       <Text
         style={{
           fontSize: 29,
@@ -258,6 +265,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    alignItems: "center",
+  },
+  modal: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    height: 70,
+    // backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(58, 196, 239, 1)",
+    zIndex: 1000, // Đảm bảo modal nằm trên cùng
+  },
+  modalTop: {
+    top: 0,
+    flexDirection: "row",
+    paddingHorizontal: 15,
     alignItems: "center",
   },
 });

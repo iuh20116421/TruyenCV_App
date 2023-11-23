@@ -19,25 +19,23 @@ export default function App({ route, navigation }) {
   const [accountInfo, setAccountInfo] = useState([]);
   const [TruyenInfo, setTruyenInfo] = useState([]);
   useEffect(() => {
-    fetch(`https://f56tg4-8080.csb.app/DsTruyen?id=${route.params?.idTruyenTT}`)
+    fetch(`https://r3kpvw-8080.csb.app/DsTruyen?id=${route.params?.idTruyenTT}`)
       .then((response) => response.json())
       .then((data) => {
         setTruyenTT(data);
-        console.log(data);
         const TruyenPromises = data.map(() =>
           fetch(
-            `https://f56tg4-8080.csb.app/BinhLuan?id_Truyen=${route.params?.idTruyenTT}`
+            `https://r3kpvw-8080.csb.app/BinhLuan?id_Truyen=${route.params?.idTruyenTT}`
           ).then((response) => response.json())
         );
 
         Promise.all(TruyenPromises)
           .then((TruyenData) => {
-            console.log(TruyenData);
             setTruyenInfo(TruyenData);
             TruyenData.forEach((binhLuan, index) => {
               const accountPromises = binhLuan.map((item) =>
                 fetch(
-                  `https://f56tg4-8080.csb.app/accounts?id=${item.id_account}`
+                  `https://r3kpvw-8080.csb.app/accounts?id=${item.id_account}`
                 ).then((response) => response.json())
               );
 
@@ -47,8 +45,7 @@ export default function App({ route, navigation }) {
                   setAccountInfo((prevAccountInfo) => [
                     ...prevAccountInfo,
                     accountData,
-                  ]);
-                  console.log(accountData); // Kiểm tra dữ liệu tài khoản trả về từ API
+                  ]); // Kiểm tra dữ liệu tài khoản trả về từ API
                 })
                 .catch((error) => {
                   console.error(

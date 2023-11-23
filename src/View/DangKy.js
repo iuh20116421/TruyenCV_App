@@ -14,7 +14,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 // Hàm kiểm tra regex(ràng buộc) cho tên đăng nhập
 const isValidUsername = (username) => {
   // Chỉ chấp nhận chữ cái và số, ít nhất 5 ký tự
-  const usernameRegex = /^[a-zA-Z0-9]{5,}$/;
+  const usernameRegex = /^[a-zA-Z0-9]{4,}$/;
   return usernameRegex.test(username);
 };
 
@@ -34,8 +34,30 @@ export default function Screen01({ navigation }) {
   const [tk, setTK] = React.useState("");
   const [mk, setmk] = React.useState("");
   const [name, setName] = React.useState("");
+  const [isModalVisible, setModalVisible] = React.useState(false);
+  const[message,setMessage]=React.useState("");
   const registerAccount = () => {
+    if (!name || !tk || !mk) {
+      setModalVisible(true);
+      setMessage("Vui lòng nhập đầy đủ thông tin");
+      setTimeout(() => {
+        setModalVisible(false);
+      }, 2500); // Đóng modal sau 3 giây
+      return;
+      showMessage({
+        message: "Thông báo",
+        description: "Vui lòng nhập đầy đủ thông tin",
+        type: "danger",
+      });
+      return;
+    }
     if (!isValidUsername(name)) {
+      setModalVisible(true);
+      setMessage("Tên đăng nhập cần ít nhất 4 ký tự, chỉ chấp nhận chữ cái và số.");
+      setTimeout(() => {
+        setModalVisible(false);
+      }, 2500); // Đóng modal sau 3 giây
+      return;
       showMessage({
         message: "Tên đăng nhập không hợp lệ! Tên đăng nhập cần ít nhất 4 ký tự, chỉ chấp nhận chữ cái và số.",
         type: "info",
@@ -46,6 +68,12 @@ export default function Screen01({ navigation }) {
     }
 
     if (!isValidEmail(tk)) {
+      setModalVisible(true);
+      setMessage("Địa chỉ email không hợp lệ!");
+      setTimeout(() => {
+        setModalVisible(false);
+      }, 2500); // Đóng modal sau 3 giây
+      return;
       showMessage({
         message: "Địa chỉ email không hợp lệ!",
         type: "info",
@@ -56,6 +84,12 @@ export default function Screen01({ navigation }) {
     }
 
     if (!isValidPassword(mk)) {
+      setModalVisible(true);
+      setMessage("Mật khẩu cần ít nhất 8 ký tự và chứa ít nhất một chữ cái và một số.");
+      setTimeout(() => {
+        setModalVisible(false);
+      }, 2500); // Đóng modal sau 3 giây
+      return;
       showMessage({
         message: "Mật khẩu không hợp lệ! Mật khẩu cần ít nhất 8 ký tự và chứa ít nhất một chữ cái và một số.",
         type: "info",
@@ -65,7 +99,7 @@ export default function Screen01({ navigation }) {
       return;
     }
 
-    fetch("https://f56tg4-8080.csb.app/accounts", {
+    fetch("https://r3kpvw-8080.csb.app/accounts", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -83,7 +117,12 @@ export default function Screen01({ navigation }) {
   };
   return (
     <View style={styles.container}>
-      <FlashMessage position="top" />
+      {isModalVisible && (
+          <View style={[styles.modal, styles.modalTop]}>
+           <Text style={{color:'white'}}>{message}</Text>
+          </View>
+        )}
+      {/* <FlashMessage position="top" /> */}
       <Text style={{ fontSize: 24, fontWeight: "bold", marginTop: 20 }}>
         Đăng ký tài khoản Truyện CV !
       </Text>
@@ -175,15 +214,9 @@ export default function Screen01({ navigation }) {
 
       <TouchableOpacity
         onPress={() => {
-          if (tk && mk && name) {
+         
             registerAccount();
-          } else {
-            showMessage({
-              message: "Thông báo",
-              description: "Vui lòng nhập đầy đủ thông tin",
-              type: "danger",
-            });
-          }
+         
         }}
         style={{
           backgroundColor: "blue",
@@ -195,9 +228,26 @@ export default function Screen01({ navigation }) {
           marginTop: 30,
         }}
       >
-        <Text style={{ color: "black", fontSize: "20px" }}>Register</Text>
+        <Text style={{ color: "white", fontSize: "21px" }}>Register</Text>
       </TouchableOpacity>
-
+      <TouchableOpacity
+        onPress={() => {
+         
+           navigation.goBack();
+         
+        }}
+        style={{
+          backgroundColor: "red",
+          borderRadius: "10px",
+          width: "90%",
+          height: "40px",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: 30,
+        }}
+      >
+        <Text style={{ color: "white", fontSize: "21px" }}>Bạn đã có tài khoản? Đăng nhập</Text>
+      </TouchableOpacity>
       <View
         style={{
           flexDirection: "row",
@@ -278,6 +328,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    alignItems: "center",
+  },
+  modal: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    height: 70,
+    // backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(58, 196, 239, 1)",
+    zIndex: 1000, // Đảm bảo modal nằm trên cùng
+  },
+  modalTop: {
+    top: 0,
+    flexDirection: "row",
+    paddingHorizontal: 15,
     alignItems: "center",
   },
 });

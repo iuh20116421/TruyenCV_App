@@ -10,7 +10,7 @@ import {
   TouchableWithoutFeedback,
   TextInput,
 } from "react-native";
-
+import { Ionicons } from "@expo/vector-icons";
 import moment from "moment";
 
 export default function App({ route, navigation }) {
@@ -22,14 +22,14 @@ export default function App({ route, navigation }) {
   const [loadBinhLuan, setloadBinhLuan] = useState("");
   useEffect(() => {
     fetch(
-      `https://f56tg4-8080.csb.app/BinhLuan?id_Truyen=${route.params?.idTruyenBL}`
+      `https://r3kpvw-8080.csb.app/BinhLuan?id_Truyen=${route.params?.idTruyenBL}`
     )
       .then((response) => response.json())
       .then((data) => {
         setdsBinhLuan(data);
         const accountPromises = data.map((item) =>
           fetch(
-            `https://f56tg4-8080.csb.app/accounts?id=${item.id_account}`
+            `https://r3kpvw-8080.csb.app/accounts?id=${item.id_account}`
           ).then((response) => response.json())
         );
 
@@ -48,7 +48,7 @@ export default function App({ route, navigation }) {
   }, [route.params?.idTruyenBL, loadBinhLuan]);
   function HandelbinhLuan() {
     if (binhLuan) {
-      fetch("https://f56tg4-8080.csb.app/BinhLuan", {
+      fetch("https://r3kpvw-8080.csb.app/BinhLuan", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,6 +72,18 @@ export default function App({ route, navigation }) {
   }
   return (
     <View style={styles.container}>
+      <View style={styles.ViewTop}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('TomTat',{ loadBinhLuan:loadBinhLuan, account: route.params?.account, idTruyenTT: route.params?.idTruyenBL});
+          }}
+        >
+          <Ionicons name="chevron-back-outline" size={40} color="#FFCC33" />
+        </TouchableOpacity>
+        <Text style={{ fontSize: 26, color: "#FFCC33", marginLeft: 15 }}>
+          DS. Bình luận
+        </Text>
+      </View>
       <FlatList
         style={{ width: "95%", height: "100%" }}
         data={dsBinhLuan}
@@ -260,6 +272,11 @@ export default function App({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+  ViewTop: {
+    width: "90%",
+    backgroundColor: "#111111",
+    flexDirection: "row",
+  },
   container: {
     flex: 1,
     backgroundColor: "#fff",

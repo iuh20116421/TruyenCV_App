@@ -17,7 +17,7 @@ export default function App({ route, navigation }) {
     {
       const encodedLoaiTruyen = encodeURIComponent("CV");
       console.log(encodedLoaiTruyen);
-      fetch(`https://f56tg4-8080.csb.app/DsTruyen?loaiTruyen=${encodedLoaiTruyen}`)
+      fetch(`https://r3kpvw-8080.csb.app/DsTruyen?loaiTruyen=${encodedLoaiTruyen}`)
         .then((response) => response.json())
         .then((data) => {
           setdsTruyen(data);
@@ -31,7 +31,7 @@ export default function App({ route, navigation }) {
     {
       const encodedLoaiTruyen = encodeURIComponent("Sáng tác");
       console.log(encodedLoaiTruyen);
-      fetch(`https://f56tg4-8080.csb.app/DsTruyen?loaiTruyen=${encodedLoaiTruyen}`)
+      fetch(`https://r3kpvw-8080.csb.app/DsTruyen?loaiTruyen=${encodedLoaiTruyen}`)
         .then((response) => response.json())
         .then((data) => {
           setdsTruyen(data);
@@ -43,7 +43,7 @@ export default function App({ route, navigation }) {
     }
     else {
       // Lọc các truyện có lượt đọc trên 200
-      fetch(`https://f56tg4-8080.csb.app/DsTruyen`)
+      fetch(`https://r3kpvw-8080.csb.app/DsTruyen`)
         .then((response) => response.json())
         .then((data) => {
           const filteredData = data.filter((item) => item.luotDoc > 200);

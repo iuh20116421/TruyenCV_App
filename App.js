@@ -34,25 +34,26 @@ export default function App() {
         <Stack.Screen
           name="DsBinhLuan"
           component={DsBinhLuan}
-          options={({navigation})=>(
-            {
-            title: 'DS. Bình luận',
-            headerTitleStyle: { color: '#FFC125', fontSize: 18 },
-            headerLeft: () => (
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Ionicons name="chevron-back" size={29} color="#FFC125" />
-              </TouchableOpacity>
-            ),
-            headerStyle: {
-              height: 50, 
-              borderBottomWidth: 2, 
-              backgroundColor: '#111111',
-            },
-            headerTitleContainerStyle: {
-              paddingBottom: 10, 
-            },
+          options={{headerShown:false}}
+          // options={({navigation})=>(
+          //   {
+          //   title: 'DS. Bình luận',
+          //   headerTitleStyle: { color: '#FFC125', fontSize: 18 },
+          //   headerLeft: () => (
+          //     <TouchableOpacity onPress={() => navigation.goBack()}>
+          //       <Ionicons name="chevron-back" size={29} color="#FFC125" />
+          //     </TouchableOpacity>
+          //   ),
+          //   headerStyle: {
+          //     height: 50, 
+          //     borderBottomWidth: 2, 
+          //     backgroundColor: '#111111',
+          //   },
+          //   headerTitleContainerStyle: {
+          //     paddingBottom: 10, 
+          //   },
           
-          })}
+          // })}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -15,7 +15,7 @@ export default function App({ route, navigation }) {
   useEffect(() => {
     const encodedLoaiTruyen = encodeURIComponent(route.params?.loaiTruyen);
     console.log(encodedLoaiTruyen);
-    fetch(`https://f56tg4-8080.csb.app/DsTruyen?theLoai=${encodedLoaiTruyen}`)
+    fetch(`https://r3kpvw-8080.csb.app/DsTruyen?theLoai=${encodedLoaiTruyen}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
