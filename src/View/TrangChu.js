@@ -11,6 +11,51 @@ import {
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+const danhmuc = [
+  {
+    name: "Truyện CV",
+  },
+  {
+    name: "Truyện Sáng Tác",
+  },
+  {
+    name: "Truyện Đọc Nhiều",
+  },
+  {
+    name: "Tiên Hiệp",
+  },
+  {
+    name: "Huyền Nhuyễn",
+  },
+  {
+    name: "Khoa Huyễn",
+  },
+  {
+    name: "Võng Du",
+  },
+  {
+    name: "Đô Thị",
+  },
+  {
+    name: "Đồng Nhân",
+  },
+  {
+    name: "Dã Sử",
+  },
+  {
+    name: "Cạnh Kỹ",
+  },
+  {
+    name: "Huyền Nghi",
+  },
+  {
+    name: "Kiếm Hiệp",
+  },
+  {
+    name: "Kỳ Ảo",
+  },
+];
+
 function DanhMuc({ navigation,route }) {
   function handleTruyen(truyen) {
     if (
@@ -26,51 +71,7 @@ function DanhMuc({ navigation,route }) {
 
     }
   }
-  const danhmuc = [
-    {
-      name: "Truyện CV",
-    },
-    {
-      name: "Truyện Sáng Tác",
-    },
-    {
-      name: "Truyện Đọc Nhiều",
-    },
-    {
-      name: "Tiên Hiệp",
-    },
-    {
-      name: "Huyền Nhuyễn",
-    },
-    {
-      name: "Khoa Huyễn",
-    },
-    {
-      name: "Võng Du",
-    },
-    {
-      name: "Đô Thị",
-    },
-    {
-      name: "Đồng Nhân",
-    },
-    {
-      name: "Dã Sử",
-    },
-    {
-      name: "Cạnh Kỹ",
-    },
-    {
-      name: "Huyền Nghi",
-    },
-    {
-      name: "Kiếm Hiệp",
-    },
-    {
-      name: "Kỳ Ảo",
-    },
-  ];
-
+ 
   return (
     <View
       style={{
@@ -119,34 +120,20 @@ function DanhMuc({ navigation,route }) {
     </View>
   );
 }
-function DaFull() {
+
+function CuaBan({navigation,route}) {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>DaFull!</Text>
+    <View style={{ flex: 1, justifyContent: "flex-end", alignItems: "center",backgroundColor:'#111111' }}>
+      <TouchableOpacity
+      onPress={()=>navigation.navigate('VietTruyen',{account:route.params?.account})}
+      style={{borderRadius:10,width:'90%',height:50,backgroundColor: '#FFCC33',justifyContent:'center',alignItems:'center'}}>
+        <Text style={{ fontSize: 21, color: "white" }}>
+          Viết truyện mới </Text>
+      </TouchableOpacity>
     </View>
   );
 }
-function SangTac() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>SangTac!</Text>
-    </View>
-  );
-}
-function CuaBan() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>CuaBan</Text>
-    </View>
-  );
-}
-function ePub() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>ePub!</Text>
-    </View>
-  );
-}
+
 function CapNhat({ route }) {
   const [dsTruyen, setdsTruyen] = useState([]);
   useEffect(() => {
@@ -219,10 +206,7 @@ export default function App({ route }) {
         component={CapNhat}
       />
       <Tab.Screen name="Danh mục"  initialParams={{ account: route.params?.account }} component={DanhMuc} />
-      <Tab.Screen name="Đã full" component={DaFull} />
-      <Tab.Screen name="Sáng tác" component={SangTac} />
-      <Tab.Screen name="Của bạn" component={CuaBan} />
-      <Tab.Screen name="ePub" component={ePub} />
+      <Tab.Screen name="Của bạn" component={CuaBan} initialParams={{ account: route.params?.account }} />
     </Tab.Navigator>
   );
 }
