@@ -84,7 +84,7 @@ export default function App({ route, navigation }) {
         },
         body: JSON.stringify({
           noiDung: binhLuan,
-          ngayBinhLuan: moment().format("YYYY-MM-DD"),
+          ngayBinhLuan: moment().format("YYYY-MM-DD HH:mm:ss "),
           id_account: route.params?.account.id,
           id_Truyen: route.params?.idTruyenBL,
         }),

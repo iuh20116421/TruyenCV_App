@@ -225,14 +225,14 @@ function CuaBan({ navigation, route }) {
             navigation.navigate("SuaTruyen", { idTruyenSua: idTruyenSua, account: route.params?.account  })
           }}
           style={{width:'100%', paddingBottom: 5, alignItems:'center',justifyContent:'center',borderBottomWidth:1  }}>
-            <Text style={{ fontSize: 22, color: "#4876FF" }}>Chỉnh sửa</Text>
+            <Text style={{ fontSize: 22, color: "blue" }}>Chỉnh sửa</Text>
           </TouchableOpacity>
           <TouchableOpacity
           onPress={()=>{
             handlePressXoaTruyen(idTruyenSua)
           }}
           style={{width:'100%', paddingBottom: 5, alignItems:'center',justifyContent:'center',borderBottomWidth:1  }}>
-            <Text style={{ fontSize: 22, color: "#FF4500" }}>Xóa truyện</Text>
+            <Text style={{ fontSize: 22, color: "red" }}>Xóa truyện</Text>
           </TouchableOpacity>
           <TouchableOpacity
           onPress={() => {
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
     width: "90%",
     height: 130,
     margin: 10,
-    backgroundColor: "#222222",
+    backgroundColor: "rgba(17, 33, 39, 0.92)",
     justifyContent: "flex-starts",
     alignItems: "center",
     flexDirection: "row",
