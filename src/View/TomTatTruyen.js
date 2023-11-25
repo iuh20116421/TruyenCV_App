@@ -18,11 +18,66 @@ export default function App({ route, navigation }) {
   const [TruyenTT, setTruyenTT] = useState([]);
   const [accountInfo, setAccountInfo] = useState([]);
   const [TruyenInfo, setTruyenInfo] = useState([]);
+  const [luotDoc, setLuotDoc] = useState();
+  const [tongLuotDoc, settongLuotDoc] = useState(0);
+  useEffect(() => {
+    fetch(`https://86373g-8080.csb.app/accounts/${route.params?.account.id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.daDoc);
+        const updatedTotalDocCount = data.daDoc + 1;
+        settongLuotDoc(updatedTotalDocCount);
+        handlePressUpdateLuotDocAccount(updatedTotalDocCount);
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra: ", error);
+      });
+  }, []);
+
+  console.log(tongLuotDoc);
+
+  function handlePressUpdateLuotDocAccount(updatedTotalDocCount) {
+    fetch(`https://86373g-8080.csb.app/accounts/${route.params?.account.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        daDoc: updatedTotalDocCount,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Handle successful update if needed
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra: ", error);
+      });
+  }
+  function updateLuotDoc(i) {
+    fetch(`https://86373g-8080.csb.app/DsTruyen/${route.params?.idTruyenTT}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        luotDoc: i + 1,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Xử lý phản hồi từ API
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra: ", error);
+      });
+  }
   useEffect(() => {
     fetch(`https://86373g-8080.csb.app/DsTruyen?id=${route.params?.idTruyenTT}`)
       .then((response) => response.json())
       .then((data) => {
         setTruyenTT(data);
+        updateLuotDoc(data[0].luotDoc);
         const TruyenPromises = data.map(() =>
           fetch(
             `https://86373g-8080.csb.app/BinhLuan?id_Truyen=${route.params?.idTruyenTT}`
@@ -74,7 +129,7 @@ export default function App({ route, navigation }) {
     <View style={styles.container}>
       <FlashMessage position="top" />
       <FlatList
-      style={{width: '100%',}}
+        style={{ width: "100%" }}
         data={TruyenTT}
         renderItem={({ item, index }) => {
           const currentAccounts = accountInfo[index] || [];
@@ -238,8 +293,9 @@ export default function App({ route, navigation }) {
               <View style={styles.ViewBLDG}>
                 <View style={styles.ViewBLDGCon}>
                   <FontAwesome name="commenting-o" size={22} color="white" />
-                  <Text style={styles.ViewBLDGText}>Bình luận {`(${currentAccounts.length})`}</Text>  
-
+                  <Text style={styles.ViewBLDGText}>
+                    Bình luận {`(${currentAccounts.length})`}
+                  </Text>
                 </View>
                 <View style={styles.ViewBLDGCon}>
                   <MaterialIcons
@@ -275,7 +331,10 @@ export default function App({ route, navigation }) {
                 </Text>
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate("DsBinhLuan", { idTruyenBL: item.id, account: route.params?.account });
+                    navigation.navigate("DsBinhLuan", {
+                      idTruyenBL: item.id,
+                      account: route.params?.account,
+                    });
                   }}
                 >
                   <Text style={{ color: "#FFC125" }}>Xem toàn bộ</Text>
@@ -283,13 +342,13 @@ export default function App({ route, navigation }) {
               </View>
               {/* Danh sách bình luận mới */}
 
-              {currentAccounts.slice(0,4).map((currentAccount, idx) => (
+              {currentAccounts.slice(0, 4).map((currentAccount, idx) => (
                 <View
                   style={{
                     width: "93%",
                     height: null,
                     flexDirection: "row",
-                    justifyContent:'center'
+                    justifyContent: "center",
                   }}
                   key={idx}
                 >
@@ -317,37 +376,36 @@ export default function App({ route, navigation }) {
                       {currentAccount[index].name}
                     </Text>
                     <View
+                      style={{
+                        width: "95%",
+                        height: null,
+                        backgroundColor: "rgba(17, 33, 39, 0.92)",
+                        borderRadius: 10,
+                      }}
+                    >
+                      <Text
                         style={{
-                          width: "95%",
-                          height: null,
-                          backgroundColor: "rgba(17, 33, 39, 0.92)",
-                          borderRadius: 10,
+                          color: "white",
+                          fontSize: 16,
+                          padding: 10,
+                          paddingBottom: 0,
                         }}
                       >
+                        {TruyenInfo[index][idx].noiDung}{" "}
+                      </Text>
+                      <View>
                         <Text
                           style={{
                             color: "white",
                             fontSize: 16,
                             padding: 10,
-                            paddingBottom: 0,
+                            textAlign: "right",
                           }}
                         >
-                            {TruyenInfo[index][idx].noiDung}{" "}
+                          {TruyenInfo[index][idx].ngayBinhLuan}{" "}
                         </Text>
-                        <View>
-                          <Text
-                            style={{
-                              color: "white",
-                              fontSize: 16,
-                              padding: 10,
-                              textAlign: "right",
-                            }}
-                          >
-                             {TruyenInfo[index][idx].ngayBinhLuan}{" "}
-                          </Text>
-                        </View>
                       </View>
-                   
+                    </View>
                   </View>
                 </View>
               ))}
@@ -368,7 +426,10 @@ export default function App({ route, navigation }) {
         <TouchableOpacity
           style={styles.NutDoc}
           onPress={() => {
-            navigation.navigate("Noidung", { idTruyen: route.params?.idTruyenTT, account: route.params?.account });
+            navigation.navigate("Noidung", {
+              idTruyen: route.params?.idTruyenTT,
+              account: route.params?.account,
+            });
           }}
         >
           <Text style={{ fontSize: 24, color: "white" }}>Đọc Truyện</Text>

@@ -46,6 +46,35 @@ export default function App({ route, navigation }) {
         console.error("Có lỗi xảy ra: ", error);
       });
   }, [route.params?.idTruyenBL, loadBinhLuan]);
+  const [tongBinhLuan, setTongBinhLuan] = useState();
+  useEffect(() => {
+    fetch(`https://86373g-8080.csb.app/accounts/${route.params?.account.id}`)
+      .then((response) => response.json())
+      .then((data) => {
+      setTongBinhLuan(data.binhLuan)
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra: ", error);
+      });
+  },[route.params?.account.id])
+  function handlePressUpdateLuotBinhLuan() {
+    fetch(`https://86373g-8080.csb.app/accounts/${route.params?.account.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        binhLuan: tongBinhLuan + 1,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setTongBinhLuan(tongBinhLuan+1)
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra: ", error);
+      });
+  }
   function HandelbinhLuan() {
     if (binhLuan) {
       fetch("https://86373g-8080.csb.app/BinhLuan", {
@@ -62,6 +91,7 @@ export default function App({ route, navigation }) {
       })
         .then((response) => response.json())
         .then((data) => {
+          handlePressUpdateLuotBinhLuan();
           setloadBinhLuan(binhLuan);
           setBinhLuan("");
         })
@@ -75,7 +105,11 @@ export default function App({ route, navigation }) {
       <View style={styles.ViewTop}>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('TomTat',{ loadBinhLuan:loadBinhLuan, account: route.params?.account, idTruyenTT: route.params?.idTruyenBL});
+            navigation.navigate("TomTat", {
+              loadBinhLuan: loadBinhLuan,
+              account: route.params?.account,
+              idTruyenTT: route.params?.idTruyenBL,
+            });
           }}
         >
           <Ionicons name="chevron-back-outline" size={40} color="#FFCC33" />
@@ -140,9 +174,6 @@ export default function App({ route, navigation }) {
                       >
                         <View style={styles.modalContainer}>
                           <View style={styles.modalContent}>
-                            <Text style={{ color: "white", fontSize: 22 }}>
-                              {selectedAccount.name}
-                            </Text>
                             <Image
                               style={{
                                 width: 100,
@@ -151,6 +182,24 @@ export default function App({ route, navigation }) {
                               }}
                               source={{ uri: selectedAccount.image }}
                             />
+                            <View style={{ padding: 10 }}>
+                              <Text style={{ color: "white", fontSize: 22 }}>
+                                Tên: {selectedAccount.name}
+                              </Text>
+                              <Text style={{ color: "white", fontSize: 22 }}>
+                                Vai trò: {selectedAccount.vaiTro}
+                              </Text>
+                              <Text style={{ color: "white", fontSize: 22 }}>
+                                Ngày tham gia: {selectedAccount.ngayThamGia}
+                              </Text>
+                              <Text style={{ color: "white", fontSize: 22 }}>
+                                Tổng số bình luận: {selectedAccount.binhLuan}
+                              </Text>
+                              <Text style={{ color: "white", fontSize: 22 }}>
+                                Đã đọc: {selectedAccount.daDoc} lần
+                              </Text>
+                            </View>
+
                             {/* Hiển thị thông tin khác của tài khoản ở đây */}
                           </View>
                         </View>
@@ -299,6 +348,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#111111",
     padding: 20,
     alignItems: "center",
+
     borderRadius: 10,
   },
   ViewBottom: {
