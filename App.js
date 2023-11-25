@@ -108,6 +108,7 @@ function AppChinh({route}) {
       />
       <Tab.Screen
         name="Thư viện"
+        initialParams={{ account: route.params?.account }}
         component={ThuVien}
         options={{
           tabBarIcon: ({ color, size }) => (

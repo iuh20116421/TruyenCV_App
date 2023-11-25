@@ -15,6 +15,7 @@ import { useState, useEffect } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { Octicons } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
+import moment from "moment";
 export default function App({ route, navigation }) {
   const [TruyenTT, setTruyenTT] = useState([]);
   const [accountInfo, setAccountInfo] = useState([]);
@@ -25,20 +26,71 @@ export default function App({ route, navigation }) {
   const [currentAccounts, setCurrentAccounts] = useState([]);
   const [fetchCompleted, setFetchCompleted] = useState(false);
   useEffect(() => {
-    if (isFocused) {
-      fetch(`https://86373g-8080.csb.app/accounts/${route.params?.account.id}`)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data.daDoc);
-          const updatedTotalDocCount = data.daDoc + 1;
-          settongLuotDoc(updatedTotalDocCount);
-          handlePressUpdateLuotDocAccount(updatedTotalDocCount);
-        })
-        .catch((error) => {
-          console.error("Có lỗi xảy ra: ", error);
-        });
-    }
-  }, [isFocused, route]);
+    fetch("https://86373g-8080.csb.app/LichSu")
+      .then((response) => response.json())
+      .then((data) => {
+        // Tìm kiếm truyện trong danh sách
+        const existingTruyen = data.find(
+          (item) => item.id_Truyen === route.params?.idTruyenTT
+        );
+        // if(typeof tenTruyen === 'string'){
+
+        // }
+        if (!existingTruyen) {
+          // Truyện chưa có trong danh sách, thực hiện POST
+
+          fetch("https://86373g-8080.csb.app/LichSu", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id_Truyen: route.params?.idTruyenTT,
+              id_account: route.params?.account.id,
+              ngayDoc: moment().format("YYYY-MM-DD HH:mm:ss"),
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {})
+            .catch((error) => {
+              console.error("Có lỗi xảy ra khi thêm mới truyện: ", error);
+            });
+        } else {
+          // Truyện đã tồn tại trong danh sách, thực hiện PUT hoặc PATCH
+          // Thực hiện cập nhật truyện có sẵn
+          fetch(`https://86373g-8080.csb.app/LichSu/${existingTruyen.id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ngayDoc: moment().format("YYYY-MM-DD HH:mm:ss"),
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {})
+            .catch((error) => {
+              console.error("Có lỗi xảy ra khi cập nhật truyện: ", error);
+            });
+        }
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra khi kiểm tra truyện: ", error);
+      });
+  }, []);
+  useEffect(() => {
+    fetch(`https://86373g-8080.csb.app/accounts/${route.params?.account.id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.daDoc);
+        const updatedTotalDocCount = data.daDoc + 1;
+        settongLuotDoc(updatedTotalDocCount);
+        handlePressUpdateLuotDocAccount(updatedTotalDocCount);
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra: ", error);
+      });
+  }, []);
 
   function handlePressUpdateLuotDocAccount(updatedTotalDocCount) {
     fetch(`https://86373g-8080.csb.app/accounts/${route.params?.account.id}`, {
