@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import {
   StyleSheet,
@@ -56,22 +56,25 @@ const danhmuc = [
   },
 ];
 
-function DanhMuc({ navigation,route }) {
+function DanhMuc({ navigation, route }) {
   function handleTruyen(truyen) {
     if (
       truyen === "Truyện CV" ||
       truyen === "Truyện Sáng Tác" ||
       truyen === "Truyện Đọc Nhiều"
     ) {
-      navigation.navigate("DanhMucLoaiTruyen", { loaiTruyen: truyen, account: route.params?.account, });
-
-    } else
-    {
-      navigation.navigate("DanhMucTLTruyen", { loaiTruyen: truyen, account: route.params?.account, });
-
+      navigation.navigate("DanhMucLoaiTruyen", {
+        loaiTruyen: truyen,
+        account: route.params?.account,
+      });
+    } else {
+      navigation.navigate("DanhMucTLTruyen", {
+        loaiTruyen: truyen,
+        account: route.params?.account,
+      });
     }
   }
- 
+
   return (
     <View
       style={{
@@ -121,15 +124,125 @@ function DanhMuc({ navigation,route }) {
   );
 }
 
-function CuaBan({navigation,route}) {
+function CuaBan({ navigation, route }) {
+  const [dsTruyenDangViet, setdsTruyenDangViet] = useState([]);
+  const isFocused = useIsFocused();
+  const [showModalBottom, setShowModalBottom] = useState(false);
+  const[idTruyenSua, setidTruyenSua] = useState();
+  const [deleten, setdeleten] = useState("");
+  useEffect(() => {
+    if (isFocused) {
+      fetch(`https://86373g-8080.csb.app/SangTacNhap`)
+        .then((response) => response.json())
+        .then((data) => {
+          setdsTruyenDangViet(data);
+        })
+        .catch((error) => {
+          // Xử lý lỗi nếu có
+          console.error("Có lỗi xảy ra: ", error);
+        });
+    }
+  }, [isFocused,deleten]);
+  function handlePressXoaTruyen(id){
+    fetch(`https://86373g-8080.csb.app/SangTacNhap/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Xử lý phản hồi từ API sau khi xóa thành công
+        setShowModalBottom((prev) => !prev);
+        setdeleten(id);
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra: ", error);
+      });
+  
+  }
+  const renderItem = ({ item }) => {
+    return (
+      <View style={styles.ViewFlatlis}>
+        <TouchableOpacity
+          style={styles.dstruyen}
+          onPress={() => {
+            setidTruyenSua(item.id);
+            setShowModalBottom((prev) => !prev);
+          }}
+        >
+          <View style={styles.ImageTruyen}>
+            <Image source={{ uri: item.image }} style={styles.ImageTruyen} />
+          </View>
+          <View style={styles.ViewChu}>
+            <Text style={styles.TexTTen}>{item.ten}</Text>
+            <Text style={styles.Textduoi}>
+              {item.tacGia}
+              {"\n"}
+              {item.trangThai}
+              {"\n"}
+              {item.ngayCapNhat}
+            </Text>
+            <Text style={[styles.Textduoi,{color: item.xuatBan=='Đã xuất bản'?'#4876FF':'#FF4500' }]}>
+              {item.xuatBan}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  };
   return (
-    <View style={{ flex: 1, justifyContent: "flex-end", alignItems: "center",backgroundColor:'#111111' }}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "flex-end",
+        alignItems: "center",
+        backgroundColor: "#111111",
+      }}
+    >
+      <FlatList
+        style={{ width: "100%" }}
+        data={dsTruyenDangViet}
+        renderItem={renderItem}
+      />
       <TouchableOpacity
-      onPress={()=>navigation.navigate('VietTruyen',{account:route.params?.account})}
-      style={{borderRadius:10,width:'90%',height:50,backgroundColor: '#FFCC33',justifyContent:'center',alignItems:'center'}}>
-        <Text style={{ fontSize: 21, color: "white" }}>
-          Viết truyện mới </Text>
+        onPress={() =>
+          navigation.navigate("VietTruyen", { account: route.params?.account })
+        }
+        style={{
+          borderRadius: 10,
+          width: "90%",
+          height: 50,
+          backgroundColor: "#FFCC33",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ fontSize: 21, color: "white" }}>Viết truyện mới </Text>
       </TouchableOpacity>
+      {showModalBottom && (
+        <View style={[styles.modal, styles.modalBottom]}>
+          <TouchableOpacity
+          onPress={() => {
+            setShowModalBottom((prev) => !prev);
+            navigation.navigate("SuaTruyen", { idTruyenSua: idTruyenSua, account: route.params?.account  })
+          }}
+          style={{width:'100%', paddingBottom: 5, alignItems:'center',justifyContent:'center',borderBottomWidth:1  }}>
+            <Text style={{ fontSize: 22, color: "#4876FF" }}>Chỉnh sửa</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+          onPress={()=>{
+            handlePressXoaTruyen(idTruyenSua)
+          }}
+          style={{width:'100%', paddingBottom: 5, alignItems:'center',justifyContent:'center',borderBottomWidth:1  }}>
+            <Text style={{ fontSize: 22, color: "#FF4500" }}>Xóa truyện</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+          onPress={() => {
+            setShowModalBottom((prev) => !prev);
+          }}
+          style={{width:'100%', paddingBottom: 5, alignItems:'center',justifyContent:'center',borderBottomWidth:1  }}>
+            <Text style={{ fontSize: 22, color: "#FFCC33" }}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }
@@ -137,7 +250,7 @@ function CuaBan({navigation,route}) {
 function CapNhat({ route }) {
   const [dsTruyen, setdsTruyen] = useState([]);
   useEffect(() => {
-    fetch(`https://r3kpvw-8080.csb.app/DsTruyen`)
+    fetch(`https://86373g-8080.csb.app/DsTruyen`)
       .then((response) => response.json())
       .then((data) => {
         setdsTruyen(data);
@@ -205,8 +318,16 @@ export default function App({ route }) {
         initialParams={{ account: route.params?.account }}
         component={CapNhat}
       />
-      <Tab.Screen name="Danh mục"  initialParams={{ account: route.params?.account }} component={DanhMuc} />
-      <Tab.Screen name="Của bạn" component={CuaBan} initialParams={{ account: route.params?.account }} />
+      <Tab.Screen
+        name="Danh mục"
+        initialParams={{ account: route.params?.account }}
+        component={DanhMuc}
+      />
+      <Tab.Screen
+        name="Của bạn"
+        component={CuaBan}
+        initialParams={{ account: route.params?.account }}
+      />
     </Tab.Navigator>
   );
 }
@@ -258,5 +379,20 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     margin: 5,
     borderRadius: 5,
+  },
+  modal: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    // backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "gray",
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius:5,
+    zIndex: 1000, // Đảm bảo modal nằm trên cùng
+  },
+  modalBottom: {
+    bottom: 0,
+    alignItems: "center",
   },
 });

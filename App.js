@@ -18,6 +18,7 @@ import Noidung from "./src/View/Noidung.js";
 import DanhMucLoaiTruyen from "./src/View/DanhMucLoaiTruyen.js";
 import DanhMucTLTruyen from "./src/View/DanhMucTLTruyen.js";
 import VietTruyen from "./src/View/VietTruyen.js";
+import SuaTruyen from "./src/View/SuaTruyen.js";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -33,6 +34,7 @@ export default function App() {
         <Stack.Screen options={{headerShown:false}} name="DanhMucLoaiTruyen" component={DanhMucLoaiTruyen} />
         <Stack.Screen options={{headerShown:false}} name="DanhMucTLTruyen" component={DanhMucTLTruyen} />
         <Stack.Screen options={{headerShown:false}} name="VietTruyen" component={VietTruyen} />
+        <Stack.Screen options={{headerShown:false}} name="SuaTruyen" component={SuaTruyen} />
         <Stack.Screen
           name="DsBinhLuan"
           component={DsBinhLuan}

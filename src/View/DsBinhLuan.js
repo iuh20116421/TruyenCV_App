@@ -22,14 +22,14 @@ export default function App({ route, navigation }) {
   const [loadBinhLuan, setloadBinhLuan] = useState("");
   useEffect(() => {
     fetch(
-      `https://r3kpvw-8080.csb.app/BinhLuan?id_Truyen=${route.params?.idTruyenBL}`
+      `https://86373g-8080.csb.app/BinhLuan?id_Truyen=${route.params?.idTruyenBL}`
     )
       .then((response) => response.json())
       .then((data) => {
         setdsBinhLuan(data);
         const accountPromises = data.map((item) =>
           fetch(
-            `https://r3kpvw-8080.csb.app/accounts?id=${item.id_account}`
+            `https://86373g-8080.csb.app/accounts?id=${item.id_account}`
           ).then((response) => response.json())
         );
 
@@ -48,7 +48,7 @@ export default function App({ route, navigation }) {
   }, [route.params?.idTruyenBL, loadBinhLuan]);
   function HandelbinhLuan() {
     if (binhLuan) {
-      fetch("https://r3kpvw-8080.csb.app/BinhLuan", {
+      fetch("https://86373g-8080.csb.app/BinhLuan", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

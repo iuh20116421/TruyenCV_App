@@ -19,13 +19,13 @@ export default function App({ route, navigation }) {
   const [accountInfo, setAccountInfo] = useState([]);
   const [TruyenInfo, setTruyenInfo] = useState([]);
   useEffect(() => {
-    fetch(`https://r3kpvw-8080.csb.app/DsTruyen?id=${route.params?.idTruyenTT}`)
+    fetch(`https://86373g-8080.csb.app/DsTruyen?id=${route.params?.idTruyenTT}`)
       .then((response) => response.json())
       .then((data) => {
         setTruyenTT(data);
         const TruyenPromises = data.map(() =>
           fetch(
-            `https://r3kpvw-8080.csb.app/BinhLuan?id_Truyen=${route.params?.idTruyenTT}`
+            `https://86373g-8080.csb.app/BinhLuan?id_Truyen=${route.params?.idTruyenTT}`
           ).then((response) => response.json())
         );
 
@@ -35,7 +35,7 @@ export default function App({ route, navigation }) {
             TruyenData.forEach((binhLuan, index) => {
               const accountPromises = binhLuan.map((item) =>
                 fetch(
-                  `https://r3kpvw-8080.csb.app/accounts?id=${item.id_account}`
+                  `https://86373g-8080.csb.app/accounts?id=${item.id_account}`
                 ).then((response) => response.json())
               );
 
@@ -74,6 +74,7 @@ export default function App({ route, navigation }) {
     <View style={styles.container}>
       <FlashMessage position="top" />
       <FlatList
+      style={{width: '100%',}}
         data={TruyenTT}
         renderItem={({ item, index }) => {
           const currentAccounts = accountInfo[index] || [];

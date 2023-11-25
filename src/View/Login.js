@@ -46,7 +46,7 @@ export default function Screen01({ navigation, route }) {
     //   });
     //   return;
     // }
-    fetch("https://r3kpvw-8080.csb.app/accounts")
+    fetch("https://86373g-8080.csb.app/accounts")
       .then((response) => response.json())
       .then((data) => {
         setdataAccount(data);

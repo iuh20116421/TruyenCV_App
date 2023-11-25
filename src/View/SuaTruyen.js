@@ -17,7 +17,6 @@ import { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 import moment from "moment";
 export default function App({ route, navigation }) {
-  
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -32,7 +31,6 @@ export default function App({ route, navigation }) {
     }
   };
   const danhmuc = [
-   
     {
       name: "Tiên Hiệp",
     },
@@ -67,56 +65,252 @@ export default function App({ route, navigation }) {
       name: "Kỳ Ảo",
     },
   ];
-  const [tenTruyen, setTenTruyen] = useState("Chưa Đặt Tên");
+  const [dataTruyen, setDataTruyen] = useState([]);
+  const [tenTruyen, setTenTruyen] = useState("");
+  useEffect(() => {
+    fetch(
+      `https://86373g-8080.csb.app/SangTacNhap?id=${route.params?.idTruyenSua}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setDataTruyen(data);
+        setTenTruyen(data.map((item) => item.ten));
+        setTenTacGia(data.map((item) => item.tacGia));
+        setTenTruyen(data.map((item) => item.ten));
+        setMoTa(data.map((item) => item.TomTat));
+        setNoiDung(data.map((item) => item.noiDung));
+        setTheLoai(data.map((item) => item.theLoai));
+        setNgayDang(data.map((item) => item.ngayDang));
+        setNguon(data.map((item) => item.nguon));
+        setXuatBan(data.map((item) => item.xuatBan));
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra: ", error);
+      });
+  }, []);
+
   const [image, setImage] = useState(null);
-  const [tenTacGia, setTenTacGia] = useState(route.params?.account.name);
-  const [ngayDang, setNgayDang] = useState(
-    moment().format("DD/MM/YYYY HH:mm:ss")
-  );
+  const [tenTacGia, setTenTacGia] = useState("");
+  const [ngayDang, setNgayDang] = useState("");
+  const [moTa, setMoTa] = useState("");
+  const [NoiDung, setNoiDung] = useState("");
+  const [trangThai, setTrangThai] = useState("");
+  const [theLoai, setTheLoai] = useState("");
+  const [nguon, setNguon] = useState("");
+  const [xuatBan, setXuatBan] = useState("");
+
   const [modalVisibleTheLoai, setModalVisibleTheLoai] = useState(false);
-  const [theLoai, setTheLoai] = useState("Chưa chọn");
   const [modalVisibleMota, setModalVisibleMota] = useState(false);
-  const [moTa, setMoTa] = useState("Chưa có mô tả");
+
   const [shortDescription, setShortDescription] = useState(true);
   const [moTaHeight, setMoTaHeight] = useState(70);
 
   const [modalVisibleNoiDung, setModalVisibleNoiDung] = useState(false);
-  const [NoiDung, setNoiDung] = useState("Chưa có nội dung");
   const [shortDescriptionNoiDung, setShortDescriptionNoiDung] = useState(true);
   const [NoiDungHeight, setNoiDungHeight] = useState(70);
-  function handleVietTruyen() {
-    fetch("https://86373g-8080.csb.app/SangTacNhap", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          image:'https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png',
-          ten: tenTruyen,
-          tacGia: tenTacGia,
-          soChuong: 0,
-          ngayDang: ngayDang,
-          ngayCapNhat: moment().format("YYYY-MM-DD"),
-          luotDoc: 0,
-          nguon: `${route.params?.account.name}`,
-          theLoai: theLoai,
-          loaiTruyen: "Sáng tác",
-          trangThai: "Đang ra",
-          noiDung: NoiDung,
-          TomTat: moTa,
-          xuatBan: "Chưa xuất bản",
-        }),
+  function handelPressXuatBan() {
+    fetch("https://86373g-8080.csb.app/DsTruyen")
+      .then((response) => response.json())
+      .then((data) => {
+        // Tìm kiếm truyện trong danh sách
+        const existingTruyen = data.find(
+          (item) => item.idTruyenNhap === route.params?.idTruyenSua
+        );
+        // if(typeof tenTruyen === 'string'){
+
+        // }
+        if (!existingTruyen) {
+          // Truyện chưa có trong danh sách, thực hiện POST
+
+          fetch("https://86373g-8080.csb.app/DsTruyen", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              image:
+                "https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png",
+              ten:
+                typeof tenTruyen === "string"
+                  ? tenTruyen
+                  : tenTruyen.join(", "),
+              tacGia:
+                typeof tenTacGia === "string"
+                  ? tenTacGia
+                  : tenTacGia.join(", "),
+              soChuong: 0,
+              ngayDang:
+                typeof ngayDang === "string" ? ngayDang : ngayDang.join(", "),
+              ngayCapNhat: moment().format("YYYY-MM-DD HH:mm:ss"),
+              luotDoc: 0,
+              nguon: typeof nguon === "string" ? nguon : nguon.join(", "),
+              theLoai:
+                typeof theLoai === "string" ? theLoai : theLoai.join(", "),
+              loaiTruyen: "Sáng tác",
+              trangThai: "Đang ra",
+              noiDung:
+                typeof NoiDung === "string" ? NoiDung : NoiDung.join(", "),
+              TomTat: typeof moTa === "string" ? moTa : moTa.join(", "),
+              idTruyenNhap: route.params?.idTruyenSua,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              handlePressUpdateTruyen(route.params?.idTruyenSua);
+            })
+            .catch((error) => {
+              console.error("Có lỗi xảy ra khi thêm mới truyện: ", error);
+            });
+        } else {
+          // Truyện đã tồn tại trong danh sách, thực hiện PUT hoặc PATCH
+          // Thực hiện cập nhật truyện có sẵn
+          fetch(`https://86373g-8080.csb.app/dsTruyen/${existingTruyen.id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              image:
+                "https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png",
+              ten:
+                typeof tenTruyen === "string"
+                  ? tenTruyen
+                  : tenTruyen.join(", "),
+              tacGia:
+                typeof tenTacGia === "string"
+                  ? tenTacGia
+                  : tenTacGia.join(", "),
+              soChuong: 0,
+              ngayDang:
+                typeof ngayDang === "string" ? ngayDang : ngayDang.join(", "),
+              ngayCapNhat: moment().format("YYYY-MM-DD HH:mm:ss"),
+              luotDoc: 0,
+              nguon: typeof nguon === "string" ? nguon : nguon.join(", "),
+              theLoai:
+                typeof theLoai === "string" ? theLoai : theLoai.join(", "),
+              loaiTruyen: "Sáng tác",
+              trangThai: "Đang ra",
+              noiDung:
+                typeof NoiDung === "string" ? NoiDung : NoiDung.join(", "),
+              TomTat: typeof moTa === "string" ? moTa : moTa.join(", "),
+              idTruyenNhap: route.params?.idTruyenSua,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              handlePressUpdateTruyen(route.params?.idTruyenSua);
+            })
+            .catch((error) => {
+              console.error("Có lỗi xảy ra khi cập nhật truyện: ", error);
+            });
+        }
       })
-        .then((response) => response.json())
-        .then((data) => {
-          navigation.goBack()
-        })
-        .catch((error) => {
-          console.error("Có lỗi xảy ra: ", error);
-        });
+      .catch((error) => {
+        console.error("Có lỗi xảy ra khi kiểm tra truyện: ", error);
+      });
+  }
+  function handlePressXoaTruyen() {
+    fetch(`https://86373g-8080.csb.app/dsTruyen/${route.params?.idTruyenSua}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Xử lý phản hồi từ API
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra: ", error);
+      });
+  }
+  function handlePressUpdateTruyen(id) {
+    fetch(`https://86373g-8080.csb.app/SangTacNhap/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        xuatBan: "Đã xuất bản",
+        image:
+          "https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png",
+        ten: typeof tenTruyen === "string" ? tenTruyen : tenTruyen.join(", "),
+        tacGia:
+          typeof tenTacGia === "string" ? tenTacGia : tenTacGia.join(", "),
+        soChuong: 0,
+        ngayDang: typeof ngayDang === "string" ? ngayDang : ngayDang.join(", "),
+        ngayCapNhat: moment().format("YYYY-MM-DD HH:mm:ss"),
+        luotDoc: 0,
+        nguon: typeof nguon === "string" ? nguon : nguon.join(", "),
+        theLoai: typeof theLoai === "string" ? theLoai : theLoai.join(", "),
+        loaiTruyen: "Sáng tác",
+        trangThai: "Đang ra",
+        noiDung: typeof NoiDung === "string" ? NoiDung : NoiDung.join(", "),
+        TomTat: typeof moTa === "string" ? moTa : moTa.join(", "),
+        idTruyenNhap: route.params?.idTruyenSua,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Xử lý phản hồi từ API
+        navigation.goBack();
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra: ", error);
+      });
+  }
+  function handlePressUpdateTruyenChuaXuatBan(id) {
+    fetch(`https://86373g-8080.csb.app/SangTacNhap/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        image:
+          "https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png",
+        ten: typeof tenTruyen === "string" ? tenTruyen : tenTruyen.join(", "),
+        tacGia:
+          typeof tenTacGia === "string" ? tenTacGia : tenTacGia.join(", "),
+        soChuong: 0,
+        ngayDang: typeof ngayDang === "string" ? ngayDang : ngayDang.join(", "),
+        ngayCapNhat: moment().format("YYYY-MM-DD HH:mm:ss"),
+        luotDoc: 0,
+        nguon: typeof nguon === "string" ? nguon : nguon.join(", "),
+        theLoai: typeof theLoai === "string" ? theLoai : theLoai.join(", "),
+        loaiTruyen: "Sáng tác",
+        trangThai: "Đang ra",
+        noiDung: typeof NoiDung === "string" ? NoiDung : NoiDung.join(", "),
+        TomTat: typeof moTa === "string" ? moTa : moTa.join(", "),
+        idTruyenNhap: route.params?.idTruyenSua,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Xử lý phản hồi từ API
+        navigation.goBack();
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra: ", error);
+      });
   }
   return (
     <View style={styles.container}>
+      <View style={styles.ViewTop}>
+        <TouchableOpacity
+          onPress={() => {
+            handlePressUpdateTruyenChuaXuatBan(route.params?.idTruyenSua);
+          }}
+        >
+          <Ionicons name="chevron-back-outline" size={40} color="#FFCC33" />
+        </TouchableOpacity>
+        <Text
+          style={{
+            fontSize: 26,
+            color: "#FFCC33",
+            marginLeft: 15,
+            marginRight: 140,
+          }}
+        >
+          Xong
+        </Text>
+      </View>
       <Modal
         animationType="slide"
         transparent={true}
@@ -152,33 +346,13 @@ export default function App({ route, navigation }) {
               onPress={() => setModalVisibleTheLoai(false)}
               style={{ marginTop: 20 }}
             >
-              <Text style={{ fontSize: 18, color: "#FF4500", textAlign: "center" }}>
+              <Text style={{ fontSize: 18, color: "red", textAlign: "center" }}>
                 Hủy
               </Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-      <View style={styles.ViewTop}>
-        <TouchableOpacity
-          onPress={() => {
-           handleVietTruyen();
-          }}
-        >
-          <Ionicons name="chevron-back-outline" size={40} color="#FFCC33" />
-        </TouchableOpacity>
-        <Text
-          style={{
-            fontSize: 26,
-            color: "#FFCC33",
-            marginLeft: 15,
-            marginRight: 140,
-          }}
-        >
-          Viết truyện
-        </Text>
-        
-      </View>
       <ScrollView
         style={{
           width: "100%",
@@ -215,7 +389,7 @@ export default function App({ route, navigation }) {
               }}
             />
             <TextInput
-              onChangeText={(text) => setTenTruyen(text)}
+              onChangeText={setTenTruyen}
               value={tenTruyen}
               style={{
                 color: "#FFCC33",
@@ -274,7 +448,14 @@ export default function App({ route, navigation }) {
           </View>
           <View style={styles.ViewChu}>
             <Text style={styles.Text}>Trạng thái truyện:</Text>
-            <Text style={[styles.Text, { color: "#FF4500" }]}>Chưa xuất bản</Text>
+            <Text
+              style={[
+                styles.Text,
+                { color: xuatBan == "Đã xuất bản" ? "#4876FF" : "red" },
+              ]}
+            >
+              {xuatBan}
+            </Text>
           </View>
           <TouchableOpacity
             style={{
@@ -283,7 +464,9 @@ export default function App({ route, navigation }) {
               alignItems: "center",
               marginTop: 10,
             }}
-            onPress={() => {}}
+            onPress={() => {
+              handelPressXuatBan();
+            }}
           >
             <Text
               style={[
@@ -309,7 +492,7 @@ export default function App({ route, navigation }) {
             <TouchableOpacity
               onPress={() => {
                 setShortDescription(!shortDescription);
-                setMoTaHeight(shortDescription ? null : 70); 
+                setMoTaHeight(shortDescription ? null : 70);
               }}
             >
               <Text
@@ -352,7 +535,7 @@ export default function App({ route, navigation }) {
             <TouchableOpacity
               onPress={() => {
                 setShortDescriptionNoiDung(!shortDescriptionNoiDung);
-                setNoiDungHeight(shortDescriptionNoiDung ? null : 70); 
+                setNoiDungHeight(shortDescriptionNoiDung ? null : 70);
               }}
             >
               <Text
@@ -377,7 +560,7 @@ export default function App({ route, navigation }) {
               alignItems: "center",
             }}
           >
-           <Text style={{ fontSize: 21, color: "white" }}>Sửa</Text>
+            <Text style={{ fontSize: 21, color: "white" }}>Sửa</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -391,7 +574,7 @@ export default function App({ route, navigation }) {
       >
         <View style={styles.modalContainerTheLoai}>
           <View style={styles.modalContentTheLoai}>
-          <Text
+            <Text
               style={{ fontSize: 20, marginBottom: 20, textAlign: "center" }}
             >
               Nhập Mô Tả
@@ -414,7 +597,7 @@ export default function App({ route, navigation }) {
               style={{ flexDirection: "row", justifyContent: "space-around" }}
             >
               <TouchableOpacity onPress={() => setModalVisibleMota(false)}>
-                <Text style={{ fontSize: 18, color: "#FF4500" }}>Hủy</Text>
+                <Text style={{ fontSize: 18, color: "red" }}>Hủy</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
@@ -438,7 +621,7 @@ export default function App({ route, navigation }) {
       >
         <View style={styles.modalContainerTheLoai}>
           <View style={styles.modalContentTheLoai}>
-          <Text
+            <Text
               style={{ fontSize: 20, marginBottom: 20, textAlign: "center" }}
             >
               Nhập nội dung
@@ -461,7 +644,7 @@ export default function App({ route, navigation }) {
               style={{ flexDirection: "row", justifyContent: "space-around" }}
             >
               <TouchableOpacity onPress={() => setModalVisibleNoiDung(false)}>
-                <Text style={{ fontSize: 18, color: "#FF4500" }}>Hủy</Text>
+                <Text style={{ fontSize: 18, color: "red" }}>Hủy</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
@@ -480,7 +663,6 @@ export default function App({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
     backgroundColor: "#111111",
   },
@@ -493,7 +675,7 @@ const styles = StyleSheet.create({
     padding: 17,
     backgroundColor: "#222222",
   },
-  
+
   Text: {
     fontSize: 18,
     color: "gray",

@@ -22,7 +22,7 @@ export default function App({route}) {
   const [dsTruyen, setdsTruyen] = useState([]);
   const [startedSearching, setStartedSearching] = useState(false);
   useEffect(() => {
-    fetch(`https://r3kpvw-8080.csb.app/DsTruyen`)
+    fetch(`https://86373g-8080.csb.app/DsTruyen`)
       .then((response) => response.json())
       .then((data) => {
         setdsTruyen(data);

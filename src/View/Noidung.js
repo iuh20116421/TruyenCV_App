@@ -13,7 +13,7 @@ import { Feather } from "@expo/vector-icons";
 export default function App({ route, navigation }) {
   const [truyen, setTruyen] = useState([]);
   useEffect(() => {
-    fetch(`https://r3kpvw-8080.csb.app/DsTruyen?id=${route.params?.idTruyen}`)
+    fetch(`https://86373g-8080.csb.app/DsTruyen?id=${route.params?.idTruyen}`)
       .then((response) => response.json())
       .then((data) => {
         setTruyen(data);

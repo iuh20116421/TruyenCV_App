@@ -99,7 +99,7 @@ export default function Screen01({ navigation }) {
       return;
     }
 
-    fetch("https://r3kpvw-8080.csb.app/accounts", {
+    fetch("https://86373g-8080.csb.app/accounts", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
