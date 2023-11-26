@@ -116,7 +116,7 @@ function AppChinh({route}) {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Cộng đồng"
         component={CongDong}
         initialParams={{ account: route.params?.account }}
@@ -129,7 +129,7 @@ function AppChinh({route}) {
             />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Cài đặt"
         component={CaiDat}

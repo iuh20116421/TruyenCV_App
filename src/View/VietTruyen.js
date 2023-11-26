@@ -17,6 +17,9 @@ import { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 import moment from "moment";
 export default function App({ route, navigation }) {
+  const [image, setImage] = useState(
+    "https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png"
+  );
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -25,7 +28,6 @@ export default function App({ route, navigation }) {
       aspect: [4, 3],
       quality: 1,
     });
-    console.log(result);
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
@@ -66,7 +68,7 @@ export default function App({ route, navigation }) {
     },
   ];
   const [tenTruyen, setTenTruyen] = useState("Chưa Đặt Tên");
-  const [image, setImage] = useState(null);
+
   const [tenTacGia, setTenTacGia] = useState(route.params?.account.name);
   const [ngayDang, setNgayDang] = useState(
     moment().format("DD/MM/YYYY HH:mm:ss")
@@ -89,8 +91,7 @@ export default function App({ route, navigation }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        image:
-          "https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png",
+        image: image,
         ten: tenTruyen,
         tacGia: tenTacGia,
         soChuong: 0,
@@ -108,7 +109,6 @@ export default function App({ route, navigation }) {
     })
       .then((response) => response.json())
       .then((data) => {
-       
         navigation.goBack();
       })
       .catch((error) => {
@@ -122,8 +122,7 @@ export default function App({ route, navigation }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        image:
-          "https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png",
+        image: image,
         ten: tenTruyen,
         tacGia: tenTacGia,
         soChuong: 0,
@@ -151,15 +150,15 @@ export default function App({ route, navigation }) {
   function getIDTruyenNhpap() {
     const encodedNgayDang = encodeURIComponent(ngayDang);
     fetch(`https://86373g-8080.csb.app/SangTacNhap?ngayDang=${encodedNgayDang}`)
-    .then((response) => response.json())
-    .then((data) => {
-      // console.log(data);
-      handelPressXuatBan(data[0].id);
-      // navigation.goBack();
-    })
-    .catch((error) => {
-      console.error("Có lỗi xảy ra: ", error);
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        // console.log(data);
+        handelPressXuatBan(data[0].id);
+        // navigation.goBack();
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra: ", error);
+      });
   }
   function handelPressXuatBan(id) {
     fetch("https://86373g-8080.csb.app/DsTruyen", {
@@ -168,8 +167,7 @@ export default function App({ route, navigation }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        image:
-          "https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png",
+        image: image,
         ten: typeof tenTruyen === "string" ? tenTruyen : tenTruyen.join(", "),
         tacGia:
           typeof tenTacGia === "string" ? tenTacGia : tenTacGia.join(", "),
@@ -187,8 +185,7 @@ export default function App({ route, navigation }) {
       }),
     })
       .then((response) => response.json())
-      .then((data) => {
-      })
+      .then((data) => {})
       .catch((error) => {
         console.error("Có lỗi xảy ra khi thêm mới truyện: ", error);
       });
@@ -286,7 +283,7 @@ export default function App({ route, navigation }) {
             }}
           >
             <Image
-              source={require("../../assets/imgTruyen/Logo.png")}
+              source={{ uri: image }}
               style={{
                 width: "170px",
                 height: "170px",
@@ -365,7 +362,9 @@ export default function App({ route, navigation }) {
               alignItems: "center",
               marginTop: 10,
             }}
-            onPress={() => {handleVietTruyen2()}}
+            onPress={() => {
+              handleVietTruyen2();
+            }}
           >
             <Text
               style={[

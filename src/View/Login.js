@@ -9,6 +9,7 @@ import {
   ImageBackground,
   Modal,
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 import * as React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import FlashMessage, { showMessage } from "react-native-flash-message";
@@ -18,10 +19,27 @@ import { useEffect } from "react";
 import moment from "moment";
 
 export default function Screen01({ navigation, route }) {
+  const [image, setImage] = React.useState(
+    "https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png"
+  );
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
   const isFocused = useIsFocused();
   useEffect(() => {
     if (isFocused) {
       setModalVisibleRegister(true);
+      setImage("https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png"
+      )
     }
   }, [isFocused]);
 
@@ -137,8 +155,7 @@ export default function Screen01({ navigation, route }) {
         binhLuan: 0,
         daDoc: 0,
         ngayThamGia: moment().format("YYYY-MM-DD HH:mm:ss"),
-        image:
-          "https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png",
+        image: image,
       }),
     })
       .then((response) => response.json())
@@ -159,6 +176,7 @@ export default function Screen01({ navigation, route }) {
         console.error("Có lỗi xảy ra: ", error);
       });
   };
+
   return (
     <View style={styles.container}>
       {isModalVisible && (
@@ -203,7 +221,7 @@ export default function Screen01({ navigation, route }) {
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    padding: 15,
+                    padding: 5,
                   }}
                 >
                   <TouchableOpacity
@@ -287,12 +305,26 @@ export default function Screen01({ navigation, route }) {
                     alignItems: "flex-start",
                     width: "99%",
                     gap: 17,
-                    marginTop: 15,
+                    marginTop: 5,
                   }}
                 >
                   {/* <Text style={styles.Text}>
               Name
             </Text> */}
+            <TouchableOpacity
+            onPress={pickImage}
+            >
+            <Image
+              source={{ uri: image }}
+              style={{
+                marginLeft:110,
+                width: "50px",
+                height: "50px",
+                resizeMode: "contain",
+              }}
+            />
+            </TouchableOpacity>
+             
                   <TextInput
                     onChangeText={setname}
                     style={{
@@ -377,7 +409,7 @@ export default function Screen01({ navigation, route }) {
                       borderRadius: 10,
                       justifyContent: "center",
                       alignItems: "center",
-                      marginTop: 20,
+                      marginTop: 10,
                     }}
                     onPress={isChecked ? registerAccount : null}
                   >
@@ -553,11 +585,10 @@ const styles = StyleSheet.create({
   },
   ViewLogin: {
     width: "100%",
-    height: 500,
+    height: 530,
     // backgroundColor: "rgba(255, 255, 255, 0.9)",
     alignItems: "center",
     borderRadius: 10,
-
     padding: 10,
   },
   modal: {
@@ -586,7 +617,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: "80%",
     borderWidth: 1,
-    maxHeight: "80%",
+    maxHeight: "96%",
     padding: 10,
     alignItems: "center",
   },

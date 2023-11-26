@@ -128,7 +128,7 @@ function CuaBan({ navigation, route }) {
   const [dsTruyenDangViet, setdsTruyenDangViet] = useState([]);
   const isFocused = useIsFocused();
   const [showModalBottom, setShowModalBottom] = useState(false);
-  const[idTruyenSua, setidTruyenSua] = useState();
+  const [idTruyenSua, setidTruyenSua] = useState();
   const [deleten, setdeleten] = useState("");
   useEffect(() => {
     if (isFocused) {
@@ -142,33 +142,34 @@ function CuaBan({ navigation, route }) {
           console.error("Có lỗi xảy ra: ", error);
         });
     }
-  }, [isFocused,deleten]);
+  }, [isFocused, deleten]);
   const [idTruyenST, setidTruyenST] = useState();
-  function handlePressGetTruyenSangTac(id){
+  function handlePressGetTruyenSangTac(id) {
     fetch(`https://86373g-8080.csb.app/DsTruyen?idTruyenNhap=${id}`)
       .then((response) => response.json())
       .then((data) => {
-        // Xử lý phản hồi từ API sau khi xóa thành công
-      handlePressXoaTruyenSangTac(data[0].id);
+        if (data.length == 0) {
+          return;
+        } else {
+          // Xử lý phản hồi từ API sau khi xóa thành công
+          handlePressXoaTruyenSangTac(data[0].id);
+        }
       })
       .catch((error) => {
         console.error("Có lỗi xảy ra: ", error);
       });
-  
   }
- function handlePressXoaTruyenSangTac(id){
+  function handlePressXoaTruyenSangTac(id) {
     fetch(`https://86373g-8080.csb.app/DsTruyen/${id}`, {
       method: "DELETE",
     })
       .then((response) => response.json())
-      .then((data) => {
-       
-      })
+      .then((data) => {})
       .catch((error) => {
         console.error("Có lỗi xảy ra: ", error);
       });
- }
-  function handlePressXoaTruyen(id){
+  }
+  function handlePressXoaTruyen(id) {
     fetch(`https://86373g-8080.csb.app/SangTacNhap/${id}`, {
       method: "DELETE",
     })
@@ -182,7 +183,6 @@ function CuaBan({ navigation, route }) {
       .catch((error) => {
         console.error("Có lỗi xảy ra: ", error);
       });
-  
   }
   const renderItem = ({ item }) => {
     return (
@@ -206,7 +206,14 @@ function CuaBan({ navigation, route }) {
               {"\n"}
               {item.ngayCapNhat}
             </Text>
-            <Text style={[styles.Textduoi,{color: item.xuatBan=='Đã xuất bản'?'#4876FF':'#FF4500' }]}>
+            <Text
+              style={[
+                styles.Textduoi,
+                {
+                  color: item.xuatBan == "Đã xuất bản" ? "#4876FF" : "#FF4500",
+                },
+              ]}
+            >
               {item.xuatBan}
             </Text>
           </View>
@@ -246,25 +253,49 @@ function CuaBan({ navigation, route }) {
       {showModalBottom && (
         <View style={[styles.modal, styles.modalBottom]}>
           <TouchableOpacity
-          onPress={() => {
-            setShowModalBottom((prev) => !prev);
-            navigation.navigate("SuaTruyen", { idTruyenSua: idTruyenSua, account: route.params?.account  })
-          }}
-          style={{width:'100%', paddingBottom: 5, alignItems:'center',justifyContent:'center',borderBottomWidth:1  }}>
+            onPress={() => {
+              setShowModalBottom((prev) => !prev);
+              navigation.navigate("SuaTruyen", {
+                idTruyenSua: idTruyenSua,
+                account: route.params?.account,
+              });
+            }}
+            style={{
+              width: "100%",
+              paddingBottom: 5,
+              alignItems: "center",
+              justifyContent: "center",
+              borderBottomWidth: 1,
+            }}
+          >
             <Text style={{ fontSize: 22, color: "blue" }}>Chỉnh sửa</Text>
           </TouchableOpacity>
           <TouchableOpacity
-          onPress={()=>{
-            handlePressXoaTruyen(idTruyenSua)
-          }}
-          style={{width:'100%', paddingBottom: 5, alignItems:'center',justifyContent:'center',borderBottomWidth:1  }}>
+            onPress={() => {
+              handlePressXoaTruyen(idTruyenSua);
+            }}
+            style={{
+              width: "100%",
+              paddingBottom: 5,
+              alignItems: "center",
+              justifyContent: "center",
+              borderBottomWidth: 1,
+            }}
+          >
             <Text style={{ fontSize: 22, color: "red" }}>Xóa truyện</Text>
           </TouchableOpacity>
           <TouchableOpacity
-          onPress={() => {
-            setShowModalBottom((prev) => !prev);
-          }}
-          style={{width:'100%', paddingBottom: 5, alignItems:'center',justifyContent:'center',borderBottomWidth:1  }}>
+            onPress={() => {
+              setShowModalBottom((prev) => !prev);
+            }}
+            style={{
+              width: "100%",
+              paddingBottom: 5,
+              alignItems: "center",
+              justifyContent: "center",
+              borderBottomWidth: 1,
+            }}
+          >
             <Text style={{ fontSize: 22, color: "#FFCC33" }}>Cancel</Text>
           </TouchableOpacity>
         </View>
@@ -414,7 +445,7 @@ const styles = StyleSheet.create({
     backgroundColor: "gray",
     borderColor: "gray",
     borderWidth: 1,
-    borderRadius:5,
+    borderRadius: 5,
     zIndex: 1000, // Đảm bảo modal nằm trên cùng
   },
   modalBottom: {

@@ -27,7 +27,7 @@ export default function App({ route, navigation }) {
   const [currentAccounts, setCurrentAccounts] = useState([]);
   const [fetchCompleted, setFetchCompleted] = useState(false);
   useEffect(() => {
-    fetch("https://86373g-8080.csb.app/LichSu")
+    fetch(`https://86373g-8080.csb.app/LichSu?id_account=${route.params?.account.id}`)
       .then((response) => response.json())
       .then((data) => {
         // Tìm kiếm truyện trong danh sách
@@ -35,7 +35,7 @@ export default function App({ route, navigation }) {
           (item) => item.id_Truyen === route.params?.idTruyenTT
         );
         // if(typeof tenTruyen === 'string'){
-
+          console.log(existingTruyen);
         // }
         if (!existingTruyen) {
           // Truyện chưa có trong danh sách, thực hiện POST
@@ -442,7 +442,7 @@ export default function App({ route, navigation }) {
                         marginRight: 15,
                       }}
                       source={{
-                        uri: currentAccount[index].image,
+                        uri: TruyenInfo[index][idx].image,
                       }}
                     />
                     <View
@@ -455,7 +455,7 @@ export default function App({ route, navigation }) {
                       }}
                     >
                       <Text style={{ color: "white", fontSize: 18 }}>
-                        {currentAccount[index].name}
+                      {TruyenInfo[index][idx].name}{" "}
                       </Text>
                       <View
                         style={{
@@ -497,7 +497,6 @@ export default function App({ route, navigation }) {
           keyExtractor={(item, index) => index.toString()} // Đảm bảo key unique cho mỗi item
         />
       ) : <ActivityIndicator style={{marginBottom:300}} size="large" color="#ffffff" />}
-
       <View style={styles.ViewBottom}>
         <TouchableOpacity
           onPress={() => {

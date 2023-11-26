@@ -17,6 +17,7 @@ import { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 import moment from "moment";
 export default function App({ route, navigation }) {
+  const [image, setImage] = useState();
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -25,7 +26,6 @@ export default function App({ route, navigation }) {
       aspect: [4, 3],
       quality: 1,
     });
-    console.log(result);
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
@@ -83,13 +83,13 @@ export default function App({ route, navigation }) {
         setNgayDang(data.map((item) => item.ngayDang));
         setNguon(data.map((item) => item.nguon));
         setXuatBan(data.map((item) => item.xuatBan));
+        const image_temp = data.map((item) => item.image);
+        setImage(image_temp.join(", "));
       })
       .catch((error) => {
         console.error("Có lỗi xảy ra: ", error);
       });
   }, []);
-
-  const [image, setImage] = useState(null);
   const [tenTacGia, setTenTacGia] = useState("");
   const [ngayDang, setNgayDang] = useState("");
   const [moTa, setMoTa] = useState("");
@@ -108,6 +108,7 @@ export default function App({ route, navigation }) {
   const [modalVisibleNoiDung, setModalVisibleNoiDung] = useState(false);
   const [shortDescriptionNoiDung, setShortDescriptionNoiDung] = useState(true);
   const [NoiDungHeight, setNoiDungHeight] = useState(70);
+
   function handelPressXuatBan() {
     fetch("https://86373g-8080.csb.app/DsTruyen")
       .then((response) => response.json())
@@ -128,8 +129,7 @@ export default function App({ route, navigation }) {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              image:
-                "https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png",
+              image: image,
               ten:
                 typeof tenTruyen === "string"
                   ? tenTruyen
@@ -170,8 +170,7 @@ export default function App({ route, navigation }) {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              image:
-                "https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png",
+              image: image,
               ten:
                 typeof tenTruyen === "string"
                   ? tenTruyen
@@ -229,8 +228,7 @@ export default function App({ route, navigation }) {
       },
       body: JSON.stringify({
         xuatBan: "Đã xuất bản",
-        image:
-          "https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png",
+        image: image,
         ten: typeof tenTruyen === "string" ? tenTruyen : tenTruyen.join(", "),
         tacGia:
           typeof tenTacGia === "string" ? tenTacGia : tenTacGia.join(", "),
@@ -263,8 +261,7 @@ export default function App({ route, navigation }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        image:
-          "https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png",
+        image: image,
         ten: typeof tenTruyen === "string" ? tenTruyen : tenTruyen.join(", "),
         tacGia:
           typeof tenTacGia === "string" ? tenTacGia : tenTacGia.join(", "),
@@ -381,7 +378,7 @@ export default function App({ route, navigation }) {
             }}
           >
             <Image
-              source={require("../../assets/imgTruyen/Logo.png")}
+              source={{ uri: image }}
               style={{
                 width: "170px",
                 height: "170px",

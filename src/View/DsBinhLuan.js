@@ -86,6 +86,8 @@ export default function App({ route, navigation }) {
           noiDung: binhLuan,
           ngayBinhLuan: moment().format("YYYY-MM-DD HH:mm:ss "),
           id_account: route.params?.account.id,
+          name: route.params?.account.name,
+          image: route.params?.account.image,
           id_Truyen: route.params?.idTruyenBL,
         }),
       })
