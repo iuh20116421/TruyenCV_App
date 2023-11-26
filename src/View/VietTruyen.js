@@ -17,7 +17,6 @@ import { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 import moment from "moment";
 export default function App({ route, navigation }) {
-  
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -32,7 +31,6 @@ export default function App({ route, navigation }) {
     }
   };
   const danhmuc = [
-   
     {
       name: "Tiên Hiệp",
     },
@@ -86,34 +84,114 @@ export default function App({ route, navigation }) {
   const [NoiDungHeight, setNoiDungHeight] = useState(70);
   function handleVietTruyen() {
     fetch("https://86373g-8080.csb.app/SangTacNhap", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          image:'https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png',
-          ten: tenTruyen,
-          tacGia: tenTacGia,
-          soChuong: 0,
-          ngayDang: ngayDang,
-          ngayCapNhat: moment().format("YYYY-MM-DD"),
-          luotDoc: 0,
-          nguon: `${route.params?.account.name}`,
-          theLoai: theLoai,
-          loaiTruyen: "Sáng tác",
-          trangThai: "Đang ra",
-          noiDung: NoiDung,
-          TomTat: moTa,
-          xuatBan: "Chưa xuất bản",
-        }),
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        image:
+          "https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png",
+        ten: tenTruyen,
+        tacGia: tenTacGia,
+        soChuong: 0,
+        ngayDang: ngayDang,
+        ngayCapNhat: moment().format("YYYY-MM-DD"),
+        luotDoc: 0,
+        nguon: `${route.params?.account.name}`,
+        theLoai: theLoai,
+        loaiTruyen: "Sáng tác",
+        trangThai: "Đang ra",
+        noiDung: NoiDung,
+        TomTat: moTa,
+        xuatBan: "Chưa xuất bản",
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+       
+        navigation.goBack();
       })
-        .then((response) => response.json())
-        .then((data) => {
-          navigation.goBack()
-        })
-        .catch((error) => {
-          console.error("Có lỗi xảy ra: ", error);
-        });
+      .catch((error) => {
+        console.error("Có lỗi xảy ra: ", error);
+      });
+  }
+  function handleVietTruyen2() {
+    fetch("https://86373g-8080.csb.app/SangTacNhap", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        image:
+          "https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png",
+        ten: tenTruyen,
+        tacGia: tenTacGia,
+        soChuong: 0,
+        ngayDang: ngayDang,
+        ngayCapNhat: moment().format("YYYY-MM-DD"),
+        luotDoc: 0,
+        nguon: `${route.params?.account.name}`,
+        theLoai: theLoai,
+        loaiTruyen: "Sáng tác",
+        trangThai: "Đang ra",
+        noiDung: NoiDung,
+        TomTat: moTa,
+        xuatBan: "Đã xuất bản",
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        getIDTruyenNhpap();
+        navigation.goBack();
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra: ", error);
+      });
+  }
+  function getIDTruyenNhpap() {
+    const encodedNgayDang = encodeURIComponent(ngayDang);
+    fetch(`https://86373g-8080.csb.app/SangTacNhap?ngayDang=${encodedNgayDang}`)
+    .then((response) => response.json())
+    .then((data) => {
+      // console.log(data);
+      handelPressXuatBan(data[0].id);
+      // navigation.goBack();
+    })
+    .catch((error) => {
+      console.error("Có lỗi xảy ra: ", error);
+    });
+  }
+  function handelPressXuatBan(id) {
+    fetch("https://86373g-8080.csb.app/DsTruyen", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        image:
+          "https://github-production-user-asset-6210df.s3.amazonaws.com/96639642/285331479-5c79c492-618b-4157-81b4-d3b7a9c42478.png",
+        ten: typeof tenTruyen === "string" ? tenTruyen : tenTruyen.join(", "),
+        tacGia:
+          typeof tenTacGia === "string" ? tenTacGia : tenTacGia.join(", "),
+        soChuong: 0,
+        ngayDang: typeof ngayDang === "string" ? ngayDang : ngayDang.join(", "),
+        ngayCapNhat: moment().format("YYYY-MM-DD HH:mm:ss"),
+        luotDoc: 0,
+        nguon: `${route.params?.account.name}`,
+        theLoai: typeof theLoai === "string" ? theLoai : theLoai.join(", "),
+        loaiTruyen: "Sáng tác",
+        trangThai: "Đang ra",
+        noiDung: typeof NoiDung === "string" ? NoiDung : NoiDung.join(", "),
+        TomTat: typeof moTa === "string" ? moTa : moTa.join(", "),
+        idTruyenNhap: id,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra khi thêm mới truyện: ", error);
+      });
   }
   return (
     <View style={styles.container}>
@@ -152,7 +230,9 @@ export default function App({ route, navigation }) {
               onPress={() => setModalVisibleTheLoai(false)}
               style={{ marginTop: 20 }}
             >
-              <Text style={{ fontSize: 18, color: "#FF4500", textAlign: "center" }}>
+              <Text
+                style={{ fontSize: 18, color: "#FF4500", textAlign: "center" }}
+              >
                 Hủy
               </Text>
             </TouchableOpacity>
@@ -162,7 +242,7 @@ export default function App({ route, navigation }) {
       <View style={styles.ViewTop}>
         <TouchableOpacity
           onPress={() => {
-           handleVietTruyen();
+            handleVietTruyen();
           }}
         >
           <Ionicons name="chevron-back-outline" size={40} color="#FFCC33" />
@@ -177,7 +257,6 @@ export default function App({ route, navigation }) {
         >
           Viết truyện
         </Text>
-        
       </View>
       <ScrollView
         style={{
@@ -222,6 +301,7 @@ export default function App({ route, navigation }) {
                 fontSize: 18,
                 marginTop: 15,
                 fontWeight: "bold",
+                textAlign: "center",
               }}
             />
           </View>
@@ -274,7 +354,9 @@ export default function App({ route, navigation }) {
           </View>
           <View style={styles.ViewChu}>
             <Text style={styles.Text}>Trạng thái truyện:</Text>
-            <Text style={[styles.Text, { color: "#FF4500" }]}>Chưa xuất bản</Text>
+            <Text style={[styles.Text, { color: "#FF4500" }]}>
+              Chưa xuất bản
+            </Text>
           </View>
           <TouchableOpacity
             style={{
@@ -283,7 +365,7 @@ export default function App({ route, navigation }) {
               alignItems: "center",
               marginTop: 10,
             }}
-            onPress={() => {}}
+            onPress={() => {handleVietTruyen2()}}
           >
             <Text
               style={[
@@ -309,7 +391,7 @@ export default function App({ route, navigation }) {
             <TouchableOpacity
               onPress={() => {
                 setShortDescription(!shortDescription);
-                setMoTaHeight(shortDescription ? null : 70); 
+                setMoTaHeight(shortDescription ? null : 70);
               }}
             >
               <Text
@@ -352,7 +434,7 @@ export default function App({ route, navigation }) {
             <TouchableOpacity
               onPress={() => {
                 setShortDescriptionNoiDung(!shortDescriptionNoiDung);
-                setNoiDungHeight(shortDescriptionNoiDung ? null : 70); 
+                setNoiDungHeight(shortDescriptionNoiDung ? null : 70);
               }}
             >
               <Text
@@ -377,7 +459,7 @@ export default function App({ route, navigation }) {
               alignItems: "center",
             }}
           >
-           <Text style={{ fontSize: 21, color: "white" }}>Sửa</Text>
+            <Text style={{ fontSize: 21, color: "white" }}>Sửa</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -391,7 +473,7 @@ export default function App({ route, navigation }) {
       >
         <View style={styles.modalContainerTheLoai}>
           <View style={styles.modalContentTheLoai}>
-          <Text
+            <Text
               style={{ fontSize: 20, marginBottom: 20, textAlign: "center" }}
             >
               Nhập Mô Tả
@@ -438,7 +520,7 @@ export default function App({ route, navigation }) {
       >
         <View style={styles.modalContainerTheLoai}>
           <View style={styles.modalContentTheLoai}>
-          <Text
+            <Text
               style={{ fontSize: 20, marginBottom: 20, textAlign: "center" }}
             >
               Nhập nội dung
@@ -493,7 +575,7 @@ const styles = StyleSheet.create({
     padding: 17,
     backgroundColor: "#222222",
   },
-  
+
   Text: {
     fontSize: 18,
     color: "gray",

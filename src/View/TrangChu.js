@@ -143,6 +143,31 @@ function CuaBan({ navigation, route }) {
         });
     }
   }, [isFocused,deleten]);
+  const [idTruyenST, setidTruyenST] = useState();
+  function handlePressGetTruyenSangTac(id){
+    fetch(`https://86373g-8080.csb.app/DsTruyen?idTruyenNhap=${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        // Xử lý phản hồi từ API sau khi xóa thành công
+      handlePressXoaTruyenSangTac(data[0].id);
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra: ", error);
+      });
+  
+  }
+ function handlePressXoaTruyenSangTac(id){
+    fetch(`https://86373g-8080.csb.app/DsTruyen/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+       
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra: ", error);
+      });
+ }
   function handlePressXoaTruyen(id){
     fetch(`https://86373g-8080.csb.app/SangTacNhap/${id}`, {
       method: "DELETE",
@@ -152,6 +177,7 @@ function CuaBan({ navigation, route }) {
         // Xử lý phản hồi từ API sau khi xóa thành công
         setShowModalBottom((prev) => !prev);
         setdeleten(id);
+        handlePressGetTruyenSangTac(id);
       })
       .catch((error) => {
         console.error("Có lỗi xảy ra: ", error);

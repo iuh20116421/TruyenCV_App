@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -495,7 +496,7 @@ export default function App({ route, navigation }) {
           }}
           keyExtractor={(item, index) => index.toString()} // Đảm bảo key unique cho mỗi item
         />
-      ) : null}
+      ) : <ActivityIndicator style={{marginBottom:300}} size="large" color="#ffffff" />}
 
       <View style={styles.ViewBottom}>
         <TouchableOpacity

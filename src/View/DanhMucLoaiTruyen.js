@@ -16,7 +16,6 @@ export default function App({ route, navigation }) {
     if(route.params?.loaiTruyen === "Truyện CV")
     {
       const encodedLoaiTruyen = encodeURIComponent("CV");
-      console.log(encodedLoaiTruyen);
       fetch(`https://86373g-8080.csb.app/DsTruyen?loaiTruyen=${encodedLoaiTruyen}`)
         .then((response) => response.json())
         .then((data) => {
@@ -30,7 +29,6 @@ export default function App({ route, navigation }) {
     else if(route.params?.loaiTruyen === "Truyện Sáng Tác")
     {
       const encodedLoaiTruyen = encodeURIComponent("Sáng tác");
-      console.log(encodedLoaiTruyen);
       fetch(`https://86373g-8080.csb.app/DsTruyen?loaiTruyen=${encodedLoaiTruyen}`)
         .then((response) => response.json())
         .then((data) => {
@@ -55,8 +53,6 @@ export default function App({ route, navigation }) {
     }
     
   }, []);
-  console.log(route.params?.loaiTruyen);
-  console.log(dsTruyen);
   const renderItem = ({ item }) => {
     const handlePress = () => {
       navigation.navigate("TomTat", {
@@ -78,7 +74,7 @@ export default function App({ route, navigation }) {
               {"\n"}
               {item.soChuong} chương - {item.trangThai}
               {"\n"}
-              {item.ngayCapNhat}
+              {item.luotDoc} lượt đọc
             </Text>
           </View>
         </TouchableOpacity>

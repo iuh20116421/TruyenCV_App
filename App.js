@@ -12,7 +12,7 @@ import CongDong from "./src/View/CongDong.js";
 import CaiDat from "./src/View/CaiDat.js";
 import TomTat from "./src/View/TomTatTruyen.js";
 import Login from "./src/View/Login.js";
-import DangKy from "./src/View/DangKy.js";
+// import DangKy from "./src/View/DangKy.js";
 import DsBinhLuan from "./src/View/DsBinhLuan.js";
 import Noidung from "./src/View/Noidung.js";
 import DanhMucLoaiTruyen from "./src/View/DanhMucLoaiTruyen.js";
@@ -27,7 +27,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator >
         <Stack.Screen options={{headerShown:false}} name="Login" component={Login} />
-        <Stack.Screen options={{headerShown:false}} name="DangKy" component={DangKy} />
+        {/* <Stack.Screen options={{headerShown:false}} name="DangKy" component={DangKy} /> */}
         <Stack.Screen options={{headerShown:false}} name="AppChinh" component={AppChinh} />
         <Stack.Screen options={{headerShown:false}} name="TomTat" component={TomTat} />
         <Stack.Screen options={{headerShown:false}} name="Noidung" component={Noidung} />
@@ -119,6 +119,7 @@ function AppChinh({route}) {
       <Tab.Screen
         name="Cộng đồng"
         component={CongDong}
+        initialParams={{ account: route.params?.account }}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons
@@ -132,6 +133,7 @@ function AppChinh({route}) {
       <Tab.Screen
         name="Cài đặt"
         component={CaiDat}
+        initialParams={{ account: route.params?.account }}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="ios-person-outline" color={color} size={size} />

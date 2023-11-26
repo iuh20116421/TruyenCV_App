@@ -14,11 +14,9 @@ export default function App({ route, navigation }) {
   const [dsTruyen, setdsTruyen] = useState([]);
   useEffect(() => {
     const encodedLoaiTruyen = encodeURIComponent(route.params?.loaiTruyen);
-    console.log(encodedLoaiTruyen);
     fetch(`https://r3kpvw-8080.csb.app/DsTruyen?theLoai=${encodedLoaiTruyen}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setdsTruyen(data);
       })
       .catch((error) => {
@@ -26,8 +24,6 @@ export default function App({ route, navigation }) {
         console.error("Có lỗi xảy ra: ", error);
       });
   }, []);
-  console.log(route.params?.loaiTruyen);
-  console.log(dsTruyen);
   const renderItem = ({ item }) => {
     const handlePress = () => {
       navigation.navigate("TomTat", {
