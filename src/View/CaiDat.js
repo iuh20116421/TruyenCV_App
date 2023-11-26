@@ -63,9 +63,10 @@ export default function App({ navigation, route }) {
           <Text style={{ fontSize: 20, color: "white",marginRight:75 }}>Ẩn nguồn dữ liệu</Text>
           <Switch
           style={{width:20,}}
-          trackColor={{ false: "grey", true: "blue" }}
+          trackColor={{ false: "white", true: "#3AE84BF0" }}
           thumbColor={isEnable ? "white" : "white"}
-          ios_backgroundColor={'grey'}
+          // ios_backgroundColor={'white'}
+          web_backgroundColor={'white'}
           onValueChange={()=>{
             setIsEnable(!isEnable);
           }}
