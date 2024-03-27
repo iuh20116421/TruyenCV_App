@@ -38,7 +38,7 @@ export default function App() {
         <Stack.Screen
           name="DsBinhLuan"
           component={DsBinhLuan}
-          options={{headerShown:false}}
+          options={{headerShown:true}}
           // options={({navigation})=>(
           //   {
           //   title: 'DS. Bình luận',
